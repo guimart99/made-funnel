@@ -1008,7 +1008,7 @@
        5. CTA SECTION (revealed after video ends)
        ============================================================ -->
   <section id="cta-section" class="fade-hidden" aria-labelledby="cta-heading">
-    <div class="cta-inner">
+    <div class="cta-inner" id="cta-inner">
       <h2 class="cta-heading" id="cta-heading">¿Esto resuena contigo?</h2>
       <p class="cta-body">
         La llamada es gratuita, sin compromiso y dura 30 minutos.
@@ -1032,13 +1032,13 @@
         </button>
       </div>
 
-      <div id="cta-confirmation" style="display:none;">
-        <p class="cta-confirm-main">Nos ponemos en contacto contigo en menos de 24h.</p>
-        <p class="cta-confirm-sub">Revisa tu email y WhatsApp.</p>
-      </div>
-
       <p class="cta-contact-note">Nos ponemos en contacto contigo en menos de 24h.</p>
       <p class="cta-footer-note">Plazas limitadas · Inicio 2026 · AM Agency</p>
+    </div>
+
+    <div id="cta-confirmation" class="cta-inner" style="display:none;">
+      <p class="cta-confirm-main">Nos ponemos en contacto contigo en menos de 24h.</p>
+      <p class="cta-confirm-sub">Revisa tu email y WhatsApp.</p>
     </div>
   </section>
 
@@ -1657,16 +1657,14 @@
       });
     }
 
-    /* CTA-section "Solicitar más información" — hide all content, show only confirmation */
+    /* CTA-section "Solicitar más información" — hide cta-inner, show confirmation */
     var btnInfoCta = document.getElementById('btn-info-cta');
     if (btnInfoCta) {
       btnInfoCta.addEventListener('click', function() {
+        var ctaInner        = document.getElementById('cta-inner');
         var ctaConfirmation = document.getElementById('cta-confirmation');
-        var toHide = ['.cta-heading', '.cta-body', '.cta-buttons', '.cta-contact-note', '.cta-footer-note'];
-        toHide.forEach(function(sel) {
-          var el = document.querySelector(sel);
-          if (el) el.style.display = 'none';
-        });
+        console.log('[MADE] cta-inner:', ctaInner, 'cta-confirmation:', ctaConfirmation);
+        if (ctaInner)        ctaInner.style.display        = 'none';
         if (ctaConfirmation) ctaConfirmation.style.display = 'block';
         if (leadEmail) {
           var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
