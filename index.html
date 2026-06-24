@@ -276,6 +276,145 @@
       margin-top: -6px;
     }
 
+    /* ============================================================
+       PHONE PICKER
+       ============================================================ */
+    .phone-wrapper {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      border: 1.5px solid #e0ddd5;
+      border-radius: 8px;
+      background: #fafafa;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .phone-wrapper:focus-within {
+      border-color: var(--cherry);
+      box-shadow: 0 0 0 3px rgba(129, 1, 0, 0.1);
+      background: #fff;
+    }
+
+    .country-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 10px 0 14px;
+      background: transparent;
+      border: none;
+      border-right: 1.5px solid #e0ddd5;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--noir);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .country-pill:focus { outline: none; }
+
+    .pill-chevron {
+      font-size: 0.65rem;
+      color: #aaa;
+    }
+
+    #field-phone-number {
+      flex: 1;
+      padding: 14px 16px !important;
+      border: none !important;
+      border-radius: 0 8px 8px 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--noir);
+      min-width: 0;
+    }
+
+    #field-phone-number::placeholder { color: #b0ada5; }
+    #field-phone-number:focus { outline: none; }
+
+    .country-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      min-width: 260px;
+      background: #fff;
+      border: 1.5px solid #e0ddd5;
+      border-radius: 8px;
+      box-shadow: 0 8px 28px rgba(27, 23, 23, 0.14);
+      z-index: 200;
+      overflow: hidden;
+    }
+
+    #country-search {
+      display: block;
+      width: 100%;
+      padding: 10px 14px !important;
+      border: none !important;
+      border-bottom: 1.5px solid #e0ddd5 !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      color: var(--noir);
+    }
+
+    #country-search:focus {
+      border-bottom-color: #e0ddd5 !important;
+      box-shadow: none !important;
+      background: #fff !important;
+    }
+
+    #country-search::placeholder { color: #b0ada5; }
+
+    .country-list {
+      list-style: none;
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 4px 0;
+    }
+
+    .country-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-family: var(--font-body);
+      color: var(--noir);
+      transition: background 0.1s ease;
+    }
+
+    .country-option:hover,
+    .country-option.is-active {
+      background: rgba(129, 1, 0, 0.06);
+    }
+
+    .country-option .opt-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .country-option .opt-code {
+      font-size: 0.8rem;
+      color: #999;
+      flex-shrink: 0;
+    }
+
+    .country-no-results {
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: #aaa;
+      text-align: center;
+    }
+
     .btn-submit {
       width: 100%;
       padding: 16px 24px;
@@ -756,14 +895,31 @@
             required
           />
           <p class="field-error" id="error-email" style="display:none;">Introduce un email válido</p>
-          <input
-            type="tel"
-            id="field-whatsapp"
-            name="whatsapp"
-            placeholder="WhatsApp (con prefijo, ej. +34 612 345 678)"
-            autocomplete="tel"
-          />
-          <p class="field-error" id="error-whatsapp" style="display:none;">Introduce un número de WhatsApp válido con prefijo de país (ej. +34 612 345 678)</p>
+          <div class="phone-wrapper" id="phone-wrapper">
+            <button type="button" class="country-pill" id="country-pill" aria-haspopup="listbox" aria-expanded="false">
+              <span id="selected-flag">🇪🇸</span>
+              <span id="selected-code">+34</span>
+              <span class="pill-chevron">▾</span>
+            </button>
+            <input
+              type="tel"
+              id="field-phone-number"
+              name="phone-number"
+              placeholder="000 000 000"
+              autocomplete="tel-national"
+              inputmode="numeric"
+            />
+            <div class="country-dropdown" id="country-dropdown" role="listbox" style="display:none;">
+              <input
+                type="text"
+                id="country-search"
+                placeholder="Buscar país..."
+                autocomplete="off"
+              />
+              <ul class="country-list" id="country-list"></ul>
+            </div>
+          </div>
+          <p class="field-error" id="error-whatsapp" style="display:none;">Introduce un número de WhatsApp válido (mínimo 5 dígitos)</p>
         </div>
 
         <button type="submit" class="btn-submit" id="btn-submit">
@@ -929,6 +1085,344 @@
     var leadEmail = '';
 
     /* ============================================================
+       COUNTRY PICKER — data + logic
+       ============================================================ */
+    var selectedCountry = { f: '🇪🇸', n: 'España', c: '+34' };
+
+    var COUNTRIES = [
+      {f:'🇦🇫',n:'Afganistán',c:'+93'},
+      {f:'🇦🇱',n:'Albania',c:'+355'},
+      {f:'🇩🇿',n:'Argelia',c:'+213'},
+      {f:'🇦🇩',n:'Andorra',c:'+376'},
+      {f:'🇦🇴',n:'Angola',c:'+244'},
+      {f:'🇦🇮',n:'Anguila',c:'+1264'},
+      {f:'🇦🇬',n:'Antigua y Barbuda',c:'+1268'},
+      {f:'🇸🇦',n:'Arabia Saudita',c:'+966'},
+      {f:'🇦🇷',n:'Argentina',c:'+54'},
+      {f:'🇦🇲',n:'Armenia',c:'+374'},
+      {f:'🇦🇼',n:'Aruba',c:'+297'},
+      {f:'🇦🇺',n:'Australia',c:'+61'},
+      {f:'🇦🇹',n:'Austria',c:'+43'},
+      {f:'🇦🇿',n:'Azerbaiyán',c:'+994'},
+      {f:'🇧🇸',n:'Bahamas',c:'+1242'},
+      {f:'🇧🇭',n:'Baréin',c:'+973'},
+      {f:'🇧🇩',n:'Bangladés',c:'+880'},
+      {f:'🇧🇧',n:'Barbados',c:'+1246'},
+      {f:'🇧🇾',n:'Bielorrusia',c:'+375'},
+      {f:'🇧🇪',n:'Bélgica',c:'+32'},
+      {f:'🇧🇿',n:'Belice',c:'+501'},
+      {f:'🇧🇯',n:'Benín',c:'+229'},
+      {f:'🇧🇲',n:'Bermudas',c:'+1441'},
+      {f:'🇧🇹',n:'Bután',c:'+975'},
+      {f:'🇧🇴',n:'Bolivia',c:'+591'},
+      {f:'🇧🇦',n:'Bosnia y Herzegovina',c:'+387'},
+      {f:'🇧🇼',n:'Botsuana',c:'+267'},
+      {f:'🇧🇷',n:'Brasil',c:'+55'},
+      {f:'🇧🇳',n:'Brunéi',c:'+673'},
+      {f:'🇧🇬',n:'Bulgaria',c:'+359'},
+      {f:'🇧🇫',n:'Burkina Faso',c:'+226'},
+      {f:'🇧🇮',n:'Burundi',c:'+257'},
+      {f:'🇨🇻',n:'Cabo Verde',c:'+238'},
+      {f:'🇰🇭',n:'Camboya',c:'+855'},
+      {f:'🇨🇲',n:'Camerún',c:'+237'},
+      {f:'🇨🇦',n:'Canadá',c:'+1'},
+      {f:'🇶🇦',n:'Catar',c:'+974'},
+      {f:'🇹🇩',n:'Chad',c:'+235'},
+      {f:'🇨🇱',n:'Chile',c:'+56'},
+      {f:'🇨🇳',n:'China',c:'+86'},
+      {f:'🇨🇾',n:'Chipre',c:'+357'},
+      {f:'🇨🇴',n:'Colombia',c:'+57'},
+      {f:'🇰🇲',n:'Comoras',c:'+269'},
+      {f:'🇨🇬',n:'Congo',c:'+242'},
+      {f:'🇨🇩',n:'Congo (Rep. Dem.)',c:'+243'},
+      {f:'🇨🇰',n:'Islas Cook',c:'+682'},
+      {f:'🇰🇵',n:'Corea del Norte',c:'+850'},
+      {f:'🇰🇷',n:'Corea del Sur',c:'+82'},
+      {f:'🇨🇮',n:'Costa de Marfil',c:'+225'},
+      {f:'🇨🇷',n:'Costa Rica',c:'+506'},
+      {f:'🇭🇷',n:'Croacia',c:'+385'},
+      {f:'🇨🇺',n:'Cuba',c:'+53'},
+      {f:'🇨🇼',n:'Curazao',c:'+599'},
+      {f:'🇩🇰',n:'Dinamarca',c:'+45'},
+      {f:'🇩🇯',n:'Yibuti',c:'+253'},
+      {f:'🇩🇲',n:'Dominica',c:'+1767'},
+      {f:'🇪🇨',n:'Ecuador',c:'+593'},
+      {f:'🇪🇬',n:'Egipto',c:'+20'},
+      {f:'🇸🇻',n:'El Salvador',c:'+503'},
+      {f:'🇦🇪',n:'Emiratos Árabes Unidos',c:'+971'},
+      {f:'🇪🇷',n:'Eritrea',c:'+291'},
+      {f:'🇸🇰',n:'Eslovaquia',c:'+421'},
+      {f:'🇸🇮',n:'Eslovenia',c:'+386'},
+      {f:'🇪🇸',n:'España',c:'+34'},
+      {f:'🇺🇸',n:'Estados Unidos',c:'+1'},
+      {f:'🇪🇪',n:'Estonia',c:'+372'},
+      {f:'🇸🇿',n:'Esuatini',c:'+268'},
+      {f:'🇪🇹',n:'Etiopía',c:'+251'},
+      {f:'🇵🇭',n:'Filipinas',c:'+63'},
+      {f:'🇫🇮',n:'Finlandia',c:'+358'},
+      {f:'🇫🇯',n:'Fiyi',c:'+679'},
+      {f:'🇫🇷',n:'Francia',c:'+33'},
+      {f:'🇬🇦',n:'Gabón',c:'+241'},
+      {f:'🇬🇲',n:'Gambia',c:'+220'},
+      {f:'🇬🇪',n:'Georgia',c:'+995'},
+      {f:'🇩🇪',n:'Alemania',c:'+49'},
+      {f:'🇬🇭',n:'Ghana',c:'+233'},
+      {f:'🇬🇮',n:'Gibraltar',c:'+350'},
+      {f:'🇬🇩',n:'Granada',c:'+1473'},
+      {f:'🇬🇷',n:'Grecia',c:'+30'},
+      {f:'🇬🇱',n:'Groenlandia',c:'+299'},
+      {f:'🇬🇵',n:'Guadalupe',c:'+590'},
+      {f:'🇬🇺',n:'Guam',c:'+1671'},
+      {f:'🇬🇹',n:'Guatemala',c:'+502'},
+      {f:'🇬🇫',n:'Guayana Francesa',c:'+594'},
+      {f:'🇬🇬',n:'Guernsey',c:'+44'},
+      {f:'🇬🇳',n:'Guinea',c:'+224'},
+      {f:'🇬🇼',n:'Guinea-Bisáu',c:'+245'},
+      {f:'🇬🇶',n:'Guinea Ecuatorial',c:'+240'},
+      {f:'🇬🇾',n:'Guyana',c:'+592'},
+      {f:'🇭🇹',n:'Haití',c:'+509'},
+      {f:'🇭🇳',n:'Honduras',c:'+504'},
+      {f:'🇭🇰',n:'Hong Kong',c:'+852'},
+      {f:'🇭🇺',n:'Hungría',c:'+36'},
+      {f:'🇮🇳',n:'India',c:'+91'},
+      {f:'🇮🇩',n:'Indonesia',c:'+62'},
+      {f:'🇮🇶',n:'Irak',c:'+964'},
+      {f:'🇮🇷',n:'Irán',c:'+98'},
+      {f:'🇮🇪',n:'Irlanda',c:'+353'},
+      {f:'🇨🇽',n:'Isla de Navidad',c:'+61'},
+      {f:'🇳🇫',n:'Isla Norfolk',c:'+672'},
+      {f:'🇮🇸',n:'Islandia',c:'+354'},
+      {f:'🇰🇾',n:'Islas Caimán',c:'+1345'},
+      {f:'🇨🇨',n:'Islas Cocos',c:'+61'},
+      {f:'🇫🇴',n:'Islas Feroe',c:'+298'},
+      {f:'🇫🇰',n:'Islas Malvinas',c:'+500'},
+      {f:'🇲🇵',n:'Islas Marianas del Norte',c:'+1670'},
+      {f:'🇲🇭',n:'Islas Marshall',c:'+692'},
+      {f:'🇸🇧',n:'Islas Salomón',c:'+677'},
+      {f:'🇹🇨',n:'Islas Turcas y Caicos',c:'+1649'},
+      {f:'🇻🇬',n:'Islas Vírgenes Británicas',c:'+1284'},
+      {f:'🇻🇮',n:'Islas Vírgenes EE.UU.',c:'+1340'},
+      {f:'🇮🇱',n:'Israel',c:'+972'},
+      {f:'🇮🇹',n:'Italia',c:'+39'},
+      {f:'🇯🇲',n:'Jamaica',c:'+1876'},
+      {f:'🇯🇵',n:'Japón',c:'+81'},
+      {f:'🇯🇪',n:'Jersey',c:'+44'},
+      {f:'🇯🇴',n:'Jordania',c:'+962'},
+      {f:'🇰🇿',n:'Kazajistán',c:'+7'},
+      {f:'🇰🇪',n:'Kenia',c:'+254'},
+      {f:'🇰🇬',n:'Kirguistán',c:'+996'},
+      {f:'🇰🇮',n:'Kiribati',c:'+686'},
+      {f:'🇽🇰',n:'Kosovo',c:'+383'},
+      {f:'🇰🇼',n:'Kuwait',c:'+965'},
+      {f:'🇱🇦',n:'Laos',c:'+856'},
+      {f:'🇱🇸',n:'Lesoto',c:'+266'},
+      {f:'🇱🇻',n:'Letonia',c:'+371'},
+      {f:'🇱🇧',n:'Líbano',c:'+961'},
+      {f:'🇱🇷',n:'Liberia',c:'+231'},
+      {f:'🇱🇾',n:'Libia',c:'+218'},
+      {f:'🇱🇮',n:'Liechtenstein',c:'+423'},
+      {f:'🇱🇹',n:'Lituania',c:'+370'},
+      {f:'🇱🇺',n:'Luxemburgo',c:'+352'},
+      {f:'🇲🇴',n:'Macao',c:'+853'},
+      {f:'🇲🇰',n:'Macedonia del Norte',c:'+389'},
+      {f:'🇲🇬',n:'Madagascar',c:'+261'},
+      {f:'🇲🇾',n:'Malasia',c:'+60'},
+      {f:'🇲🇼',n:'Malaui',c:'+265'},
+      {f:'🇲🇻',n:'Maldivas',c:'+960'},
+      {f:'🇲🇱',n:'Mali',c:'+223'},
+      {f:'🇲🇹',n:'Malta',c:'+356'},
+      {f:'🇲🇦',n:'Marruecos',c:'+212'},
+      {f:'🇲🇶',n:'Martinica',c:'+596'},
+      {f:'🇲🇷',n:'Mauritania',c:'+222'},
+      {f:'🇲🇺',n:'Mauricio',c:'+230'},
+      {f:'🇾🇹',n:'Mayotte',c:'+262'},
+      {f:'🇲🇽',n:'México',c:'+52'},
+      {f:'🇫🇲',n:'Micronesia',c:'+691'},
+      {f:'🇲🇩',n:'Moldavia',c:'+373'},
+      {f:'🇲🇨',n:'Mónaco',c:'+377'},
+      {f:'🇲🇳',n:'Mongolia',c:'+976'},
+      {f:'🇲🇪',n:'Montenegro',c:'+382'},
+      {f:'🇲🇸',n:'Montserrat',c:'+1664'},
+      {f:'🇲🇿',n:'Mozambique',c:'+258'},
+      {f:'🇲🇲',n:'Myanmar',c:'+95'},
+      {f:'🇳🇦',n:'Namibia',c:'+264'},
+      {f:'🇳🇷',n:'Nauru',c:'+674'},
+      {f:'🇳🇵',n:'Nepal',c:'+977'},
+      {f:'🇳🇱',n:'Países Bajos',c:'+31'},
+      {f:'🇳🇮',n:'Nicaragua',c:'+505'},
+      {f:'🇳🇪',n:'Níger',c:'+227'},
+      {f:'🇳🇬',n:'Nigeria',c:'+234'},
+      {f:'🇳🇺',n:'Niue',c:'+683'},
+      {f:'🇳🇴',n:'Noruega',c:'+47'},
+      {f:'🇳🇨',n:'Nueva Caledonia',c:'+687'},
+      {f:'🇳🇿',n:'Nueva Zelanda',c:'+64'},
+      {f:'🇴🇲',n:'Omán',c:'+968'},
+      {f:'🇵🇰',n:'Pakistán',c:'+92'},
+      {f:'🇵🇼',n:'Palaos',c:'+680'},
+      {f:'🇵🇸',n:'Palestina',c:'+970'},
+      {f:'🇵🇦',n:'Panamá',c:'+507'},
+      {f:'🇵🇬',n:'Papúa Nueva Guinea',c:'+675'},
+      {f:'🇵🇾',n:'Paraguay',c:'+595'},
+      {f:'🇵🇪',n:'Perú',c:'+51'},
+      {f:'🇵🇫',n:'Polinesia Francesa',c:'+689'},
+      {f:'🇵🇱',n:'Polonia',c:'+48'},
+      {f:'🇵🇹',n:'Portugal',c:'+351'},
+      {f:'🇵🇷',n:'Puerto Rico',c:'+1787'},
+      {f:'🇬🇧',n:'Reino Unido',c:'+44'},
+      {f:'🇨🇫',n:'República Centroafricana',c:'+236'},
+      {f:'🇨🇿',n:'República Checa',c:'+420'},
+      {f:'🇩🇴',n:'República Dominicana',c:'+1809'},
+      {f:'🇷🇪',n:'Reunión',c:'+262'},
+      {f:'🇷🇼',n:'Ruanda',c:'+250'},
+      {f:'🇷🇴',n:'Rumanía',c:'+40'},
+      {f:'🇷🇺',n:'Rusia',c:'+7'},
+      {f:'🇼🇸',n:'Samoa',c:'+685'},
+      {f:'🇦🇸',n:'Samoa Americana',c:'+1684'},
+      {f:'🇰🇳',n:'San Cristóbal y Nieves',c:'+1869'},
+      {f:'🇸🇲',n:'San Marino',c:'+378'},
+      {f:'🇵🇲',n:'San Pedro y Miquelón',c:'+508'},
+      {f:'🇻🇨',n:'San Vicente y las Granadinas',c:'+1784'},
+      {f:'🇸🇭',n:'Santa Elena',c:'+290'},
+      {f:'🇱🇨',n:'Santa Lucía',c:'+1758'},
+      {f:'🇸🇹',n:'Santo Tomé y Príncipe',c:'+239'},
+      {f:'🇸🇳',n:'Senegal',c:'+221'},
+      {f:'🇷🇸',n:'Serbia',c:'+381'},
+      {f:'🇸🇨',n:'Seychelles',c:'+248'},
+      {f:'🇸🇱',n:'Sierra Leona',c:'+232'},
+      {f:'🇸🇬',n:'Singapur',c:'+65'},
+      {f:'🇸🇽',n:'Sint Maarten',c:'+1721'},
+      {f:'🇸🇾',n:'Siria',c:'+963'},
+      {f:'🇸🇴',n:'Somalia',c:'+252'},
+      {f:'🇱🇰',n:'Sri Lanka',c:'+94'},
+      {f:'🇿🇦',n:'Sudáfrica',c:'+27'},
+      {f:'🇸🇩',n:'Sudán',c:'+249'},
+      {f:'🇸🇸',n:'Sudán del Sur',c:'+211'},
+      {f:'🇸🇪',n:'Suecia',c:'+46'},
+      {f:'🇨🇭',n:'Suiza',c:'+41'},
+      {f:'🇸🇷',n:'Surinam',c:'+597'},
+      {f:'🇹🇭',n:'Tailandia',c:'+66'},
+      {f:'🇹🇼',n:'Taiwán',c:'+886'},
+      {f:'🇹🇿',n:'Tanzania',c:'+255'},
+      {f:'🇹🇯',n:'Tayikistán',c:'+992'},
+      {f:'🇹🇱',n:'Timor-Leste',c:'+670'},
+      {f:'🇹🇬',n:'Togo',c:'+228'},
+      {f:'🇹🇰',n:'Tokelau',c:'+690'},
+      {f:'🇹🇴',n:'Tonga',c:'+676'},
+      {f:'🇹🇹',n:'Trinidad y Tobago',c:'+1868'},
+      {f:'🇹🇳',n:'Túnez',c:'+216'},
+      {f:'🇹🇲',n:'Turkmenistán',c:'+993'},
+      {f:'🇹🇷',n:'Turquía',c:'+90'},
+      {f:'🇹🇻',n:'Tuvalu',c:'+688'},
+      {f:'🇺🇦',n:'Ucrania',c:'+380'},
+      {f:'🇺🇬',n:'Uganda',c:'+256'},
+      {f:'🇺🇾',n:'Uruguay',c:'+598'},
+      {f:'🇺🇿',n:'Uzbekistán',c:'+998'},
+      {f:'🇻🇺',n:'Vanuatu',c:'+678'},
+      {f:'🇻🇦',n:'Vaticano',c:'+379'},
+      {f:'🇻🇪',n:'Venezuela',c:'+58'},
+      {f:'🇻🇳',n:'Vietnam',c:'+84'},
+      {f:'🇼🇫',n:'Wallis y Futuna',c:'+681'},
+      {f:'🇾🇪',n:'Yemen',c:'+967'},
+      {f:'🇿🇲',n:'Zambia',c:'+260'},
+      {f:'🇿🇼',n:'Zimbabue',c:'+263'}
+    ];
+
+    function renderCountryList(filter) {
+      var list = document.getElementById('country-list');
+      if (!list) return;
+      var q = (filter || '').toLowerCase().trim();
+      var filtered = q
+        ? COUNTRIES.filter(function(co) {
+            return co.n.toLowerCase().indexOf(q) !== -1 || co.c.indexOf(q) !== -1;
+          })
+        : COUNTRIES;
+      list.innerHTML = '';
+      if (filtered.length === 0) {
+        var li = document.createElement('li');
+        li.className = 'country-no-results';
+        li.textContent = 'Sin resultados';
+        list.appendChild(li);
+        return;
+      }
+      filtered.forEach(function(co) {
+        var li = document.createElement('li');
+        li.className = 'country-option' + (co.n === selectedCountry.n ? ' is-active' : '');
+        li.setAttribute('role', 'option');
+        li.innerHTML = '<span>' + co.f + '</span>'
+                     + '<span class="opt-name">' + co.n + '</span>'
+                     + '<span class="opt-code">' + co.c + '</span>';
+        li.addEventListener('click', function() { selectCountry(co); });
+        list.appendChild(li);
+      });
+    }
+
+    function selectCountry(co) {
+      selectedCountry = co;
+      var flagEl = document.getElementById('selected-flag');
+      var codeEl = document.getElementById('selected-code');
+      if (flagEl) flagEl.textContent = co.f;
+      if (codeEl) codeEl.textContent = co.c;
+      closeCountryDropdown();
+      var phoneInput = document.getElementById('field-phone-number');
+      if (phoneInput) phoneInput.focus();
+    }
+
+    function openCountryDropdown() {
+      var dropdown = document.getElementById('country-dropdown');
+      var pill     = document.getElementById('country-pill');
+      if (!dropdown) return;
+      dropdown.style.display = 'block';
+      if (pill) pill.setAttribute('aria-expanded', 'true');
+      renderCountryList('');
+      setTimeout(function() {
+        var search = document.getElementById('country-search');
+        if (search) { search.value = ''; search.focus(); }
+        var active = document.querySelector('.country-option.is-active');
+        if (active) active.scrollIntoView({ block: 'nearest' });
+      }, 0);
+    }
+
+    function closeCountryDropdown() {
+      var dropdown = document.getElementById('country-dropdown');
+      var pill     = document.getElementById('country-pill');
+      if (dropdown) dropdown.style.display = 'none';
+      if (pill) pill.setAttribute('aria-expanded', 'false');
+    }
+
+    var countryPill = document.getElementById('country-pill');
+    if (countryPill) {
+      countryPill.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var dropdown = document.getElementById('country-dropdown');
+        if (dropdown && dropdown.style.display === 'none') {
+          openCountryDropdown();
+        } else {
+          closeCountryDropdown();
+        }
+      });
+    }
+
+    var countrySearchEl = document.getElementById('country-search');
+    if (countrySearchEl) {
+      countrySearchEl.addEventListener('input', function() {
+        renderCountryList(this.value);
+      });
+      countrySearchEl.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      countrySearchEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeCountryDropdown();
+      });
+    }
+
+    document.addEventListener('click', function(e) {
+      var wrapper = document.getElementById('phone-wrapper');
+      if (wrapper && !wrapper.contains(e.target)) {
+        closeCountryDropdown();
+      }
+    });
+
+    /* ============================================================
        SUPABASE LEAD SAVE
        POST to Supabase REST API (fails silently to not block UX)
        ============================================================ */
@@ -954,9 +1448,9 @@
     leadForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      var nombre    = document.getElementById('field-nombre').value.trim();
-      var email     = document.getElementById('field-email').value.trim();
-      var whatsappRaw = document.getElementById('field-whatsapp').value.trim();
+      var nombre   = document.getElementById('field-nombre').value.trim();
+      var email    = document.getElementById('field-email').value.trim();
+      var phoneRaw = document.getElementById('field-phone-number').value.replace(/\D/g, '');
 
       var errorEmail    = document.getElementById('error-email');
       var errorWhatsapp = document.getElementById('error-whatsapp');
@@ -978,20 +1472,13 @@
       }
 
       var whatsapp = '';
-      if (whatsappRaw) {
-        var cleaned = whatsappRaw.replace(/[\s\-\.\(\)]/g, '');
-        if (cleaned.startsWith('00')) {
-          cleaned = '+' + cleaned.slice(2);
-        } else if (!cleaned.startsWith('+')) {
-          cleaned = '+34' + cleaned;
-        }
-        var digitCount = cleaned.replace(/\D/g, '').length;
-        if (digitCount < 7) {
+      if (phoneRaw) {
+        if (phoneRaw.length < 5) {
           errorWhatsapp.style.display = 'block';
-          if (valid) document.getElementById('field-whatsapp').focus();
+          if (valid) document.getElementById('field-phone-number').focus();
           valid = false;
         } else {
-          whatsapp = cleaned;
+          whatsapp = selectedCountry.c + phoneRaw;
         }
       }
 
