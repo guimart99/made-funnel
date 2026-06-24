@@ -616,6 +616,17 @@
     #btn-info-video {
       max-width: 720px;
       margin: 20px auto 0;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    @keyframes btn-pulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    #btn-info-video.confirmed {
+      animation: btn-pulse 0.3s ease;
     }
 
     /* CTA-section instance — fits inside the button row */
@@ -1005,7 +1016,7 @@
     <button id="btn-info-video" type="button" style="display:block;width:100%;max-width:720px;margin:16px auto 0;padding:0.8rem;background:transparent;border:1px solid rgba(237,235,221,0.3);border-radius:8px;color:rgba(237,235,221,0.6);font-family:var(--font-body);font-size:0.82rem;cursor:pointer;">
       Solicitar más información →
     </button>
-    <p id="info-video-note" style="display:none;font-size:0.75rem;color:rgba(237,235,221,0.35);text-align:center;margin-top:0.4rem;opacity:0;transition:opacity 0.4s ease;">Nos ponemos en contacto contigo en menos de 24h.</p>
+    <p id="info-video-note" style="display:none;font-size:0.82rem;color:rgba(237,235,221,0.7);text-align:center;margin-top:0.6rem;opacity:0;transition:opacity 0.5s ease;">Nos ponemos en contacto contigo en menos de 24h.</p>
   </section>
 
   <!-- ============================================================
@@ -1562,9 +1573,10 @@
       btnInfoVideo.addEventListener('click', function() {
         btnInfoVideo.disabled = true;
         btnInfoVideo.textContent = '✓ Información solicitada';
-        btnInfoVideo.style.background   = 'rgba(237,235,221,0.08)';
-        btnInfoVideo.style.borderColor  = 'rgba(237,235,221,0.15)';
-        btnInfoVideo.style.color        = 'rgba(237,235,221,0.4)';
+        btnInfoVideo.style.background  = '#810100';
+        btnInfoVideo.style.borderColor = '#810100';
+        btnInfoVideo.style.color       = '#EDEBDD';
+        btnInfoVideo.classList.add('confirmed');
         var note = document.getElementById('info-video-note');
         if (note) {
           note.style.display = 'block';
