@@ -1428,7 +1428,7 @@
        ============================================================ */
     function saveLead(nombre, email, whatsapp) {
       var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE;
-      fetch(url, {
+      return fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1437,8 +1437,6 @@
           'Prefer':        'return=minimal'
         },
         body: JSON.stringify({ nombre: nombre, email: email, whatsapp: whatsapp })
-      }).catch(function(err) {
-        console.error('[MADE] Supabase error (non-blocking):', err);
       });
     }
 
@@ -1455,6 +1453,7 @@
       var errorEmail    = document.getElementById('error-email');
       var errorWhatsapp = document.getElementById('error-whatsapp');
       errorEmail.style.display    = 'none';
+      errorEmail.textContent      = 'Introduce un email válido';
       errorWhatsapp.style.display = 'none';
 
       var valid = true;
@@ -1464,7 +1463,7 @@
         return;
       }
 
-      var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      var emailRe = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
       if (!email || !emailRe.test(email)) {
         errorEmail.style.display = 'block';
         document.getElementById('field-email').focus();
@@ -1484,32 +1483,43 @@
 
       if (!valid) return;
 
-      // Disable button to prevent double-submit
       btnSubmit.disabled = true;
       btnSubmit.textContent = 'Enviando…';
 
-      // Fire Meta Pixel Lead event
-      if (typeof fbq === 'function') {
-        fbq('track', 'Lead');
-      }
+      if (typeof fbq === 'function') { fbq('track', 'Lead'); }
 
-      // Store email so CTA click handlers can update the lead record
       leadEmail = email;
 
-      // Save lead (non-blocking — UX proceeds regardless)
-      saveLead(nombre, email, whatsapp);
+      function proceedToVideo() {
+        var tickerTop = document.getElementById('ticker-top');
+        if (tickerTop) tickerTop.parentNode.removeChild(tickerTop);
+        if (formSection && formSection.parentNode) formSection.parentNode.removeChild(formSection);
+        videoSection.classList.add('is-visible');
+        setTimeout(function() {
+          videoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+      }
 
-      // Remove top ticker and form from DOM — no gap left behind
-      var tickerTop = document.getElementById('ticker-top');
-      if (tickerTop) tickerTop.parentNode.removeChild(tickerTop);
-      formSection.parentNode.removeChild(formSection);
-
-      videoSection.classList.add('is-visible');
-
-      // Smooth scroll to video
-      setTimeout(function() {
-        videoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 80);
+      saveLead(nombre, email, whatsapp)
+        .then(function(res) {
+          if (!res.ok) {
+            return res.json().then(function(body) {
+              if (body && body.code === '23505') {
+                errorEmail.textContent   = 'Ya estás registrada. Revisa tu email para acceder al contenido.';
+                errorEmail.style.display = 'block';
+                setTimeout(proceedToVideo, 2000);
+              } else {
+                proceedToVideo();
+              }
+            }).catch(proceedToVideo);
+          } else {
+            proceedToVideo();
+          }
+        })
+        .catch(function(err) {
+          console.error('[MADE] Supabase error (non-blocking):', err);
+          proceedToVideo();
+        });
     });
 
     /* ============================================================
