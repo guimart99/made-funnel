@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MADE · Formación Digital 2026 · AM Agency</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- ============================================================
+       META PIXEL
+       TODO: add Meta Pixel ID — replace [META_PIXEL_ID] in both
+       places below (fbq init call + noscript img src)
+       ============================================================ -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '[META_PIXEL_ID]'); /* TODO: add Meta Pixel ID */
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <!-- TODO: add Meta Pixel ID in the src URL below -->
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=[META_PIXEL_ID]&ev=PageView&noscript=1" />
+  </noscript>
+
+  <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES — BRAND COLORS
+       ============================================================ */
+    :root {
+      --cotton:  #EDEBDD;
+      --cherry:  #810100;
+      --maroon:  #830000;
+      --noir:    #1B1717;
+
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+
+      --transition-fade: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cotton);
+      color: var(--noir);
+      min-width: 320px;
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { color: inherit; text-decoration: none; }
+
+    /* ============================================================
+       UTILITY
+       ============================================================ */
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    /* Fade-in class toggled by JS */
+    .fade-hidden {
+      opacity: 0;
+      transform: translateY(24px);
+      pointer-events: none;
+    }
+    .fade-visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      transition: var(--transition-fade);
+    }
+
+    /* ============================================================
+       1. HERO SECTION
+       ============================================================ */
+    #hero {
+      position: relative;
+      background: var(--maroon);
+      color: var(--cotton);
+      padding: 72px 24px 40px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* Ghost watermark text */
+    #hero::before {
+      content: 'MADE';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display);
+      font-size: clamp(120px, 30vw, 300px);
+      font-weight: 900;
+      color: var(--cotton);
+      opacity: 0.04;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(237, 235, 221, 0.65);
+      margin-bottom: 20px;
+    }
+
+    .hero-h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5.5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 400;
+      line-height: 1.6;
+      color: rgba(237, 235, 221, 0.8);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Floating particles container */
+    #hero-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(237, 235, 221, 0.15);
+      pointer-events: none;
+      animation: float-particle var(--dur, 8s) ease-in var(--delay, 0s) infinite;
+    }
+
+    @keyframes float-particle {
+      0%   { transform: translateY(0)     translateX(0);                  opacity: 0;   }
+      8%   { opacity: 0.9; }
+      90%  { opacity: 0.5; }
+      100% { transform: translateY(-620px) translateX(var(--drift, 20px)); opacity: 0;  }
+    }
+
+    /* Decorative background blobs */
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes blob-pulse {
+      0%,  100% { transform: scale(1)    rotate(0deg);   }
+      33%        { transform: scale(1.12) rotate(120deg); }
+      66%        { transform: scale(0.92) rotate(240deg); }
+    }
+
+    /* Top ticker strip — sits between hero and form card, removed on submit */
+    #ticker-top {
+      background: var(--maroon);
+      overflow: hidden;
+      padding: 1.25rem 0;
+    }
+
+    /* ============================================================
+       2. FLOATING FORM CARD
+       ============================================================ */
+    #form-section {
+      position: relative;
+      z-index: 10;
+      padding: 0 16px;
+      margin-top: -100px; /* pulls up into hero */
+    }
+
+    .form-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(27, 23, 23, 0.18), 0 4px 16px rgba(27, 23, 23, 0.08);
+      padding: 40px 32px 36px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .form-card-heading {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--noir);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .form-card-subtext {
+      font-size: 0.9rem;
+      color: #6b6868;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e0ddd5;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--noir);
+      background: #fafafa;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      -webkit-appearance: none;
+    }
+
+    .form-group input::placeholder {
+      color: #b0ada5;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--cherry);
+      box-shadow: 0 0 0 3px rgba(129, 1, 0, 0.1);
+      background: #fff;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--cherry);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-submit:hover {
+      background: #6b0000;
+      box-shadow: 0 6px 20px rgba(129, 1, 0, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .trust-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .trust-item {
+      font-size: 0.78rem;
+      color: #9a9390;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .trust-item::before {
+      content: '✓';
+      color: var(--cherry);
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       3. MODULES — TICKER BANNER
+       ============================================================ */
+    #modules {
+      background: var(--maroon);
+      color: var(--cotton);
+      padding: 3rem 0 1.75rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .modules-heading {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 2rem;
+      padding: 0 24px;
+    }
+
+    .ticker-wrapper {
+      overflow: hidden;
+      width: 100%;
+      padding: 0.5rem 0;
+    }
+
+    .ticker-track {
+      display: flex;
+      flex-wrap: nowrap;
+      width: max-content;
+      will-change: transform;
+    }
+
+    .ticker-track--row1 {
+      animation: ticker-left 35s linear infinite;
+    }
+
+    .ticker-track--row2 {
+      animation: ticker-left 52s linear infinite;
+      animation-delay: -18s;
+    }
+
+    @keyframes ticker-left {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-33.3333%); }
+    }
+
+    .ticker-set {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .ticker-item {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: rgba(237, 235, 221, 0.85);
+      padding: 0 0.4rem;
+      white-space: nowrap;
+    }
+
+    .ticker-sep {
+      color: var(--cherry);
+      font-style: normal;
+      padding: 0 0.8rem;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    /* ============================================================
+       4. VIDEO SECTION (hidden until form submitted)
+       ============================================================ */
+    #video-section {
+      background: var(--noir);
+      color: var(--cotton);
+      padding: 80px 24px;
+      text-align: center;
+      display: none; /* JS shows this */
+    }
+
+    #video-section.is-visible {
+      display: block;
+    }
+
+    .video-heading {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .video-subtext {
+      font-size: 1rem;
+      color: rgba(237, 235, 221, 0.7);
+      max-width: 480px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .video-wrapper {
+      position: relative;
+      max-width: 720px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      aspect-ratio: 16 / 9;
+    }
+
+    /* YouTube embed iframe — always visible, fills 16/9 wrapper */
+    #yt-player {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* "Solicitar más información" — cherry border + text, transparent bg */
+    .btn-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 16px 28px;
+      background: transparent;
+      color: var(--cherry);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1.5px solid var(--cherry);
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s ease;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-info:hover {
+      background: rgba(129, 1, 0, 0.06);
+    }
+
+    /* Video-section instance — matches the 720px video wrapper */
+    #btn-info-video {
+      max-width: 720px;
+      margin: 20px auto 0;
+    }
+
+    /* CTA-section instance — fits inside the button row */
+    #btn-info-cta {
+      max-width: 400px;
+    }
+
+    /* Progress bar decoration */
+    .video-progress-bar {
+      max-width: 720px;
+      margin: 20px auto 0;
+      height: 3px;
+      background: rgba(237, 235, 221, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .video-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--cherry);
+      border-radius: 2px;
+      transition: width 0.5s linear;
+    }
+
+    /* ============================================================
+       5. CTA SECTION (hidden until video ends)
+       ============================================================ */
+    #cta-section {
+      background: var(--cotton);
+      padding: 80px 24px;
+      text-align: center;
+    }
+
+    /* Start hidden, JS fades it in */
+    #cta-section.fade-hidden {
+      display: none;
+    }
+
+    #cta-section.fade-visible {
+      display: block;
+    }
+
+    .cta-inner {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .cta-heading {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--noir);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .cta-body {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #4a4646;
+      margin-bottom: 36px;
+    }
+
+    .cta-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 400px;
+      padding: 18px 28px;
+      background: var(--cherry);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary:hover {
+      background: #6b0000;
+      box-shadow: 0 6px 24px rgba(129, 1, 0, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 400px;
+      padding: 16px 28px;
+      background: transparent;
+      color: var(--noir);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1.5px solid #c5c1b4;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--noir);
+      background: rgba(27, 23, 23, 0.04);
+    }
+
+    .cta-contact-note {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      color: #888;
+      text-align: center;
+    }
+
+    .cta-footer-note {
+      margin-top: 28px;
+      font-size: 0.78rem;
+      color: #9a9390;
+      letter-spacing: 0.05em;
+    }
+
+    /* ============================================================
+       6. FOOTER
+       ============================================================ */
+    #footer {
+      background: var(--noir);
+      color: rgba(237, 235, 221, 0.45);
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       RESPONSIVE — wider screens
+       ============================================================ */
+    @media (min-width: 600px) {
+      .cta-buttons {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .btn-primary,
+      .btn-secondary,
+      .btn-info {
+        width: auto;
+      }
+    }
+
+    @media (min-width: 768px) {
+      #hero {
+        padding: 96px 40px 60px;
+      }
+      .form-card {
+        padding: 48px 48px 44px;
+      }
+      #form-section {
+        margin-top: -120px;
+      }
+      .ticker-item {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       1. HERO SECTION
+       ============================================================ -->
+  <section id="hero" aria-labelledby="hero-h1">
+
+    <!-- Decorative background blobs — z-index 0, aria hidden -->
+    <div class="hero-blob" aria-hidden="true" style="width:280px;height:280px;top:-60px;left:-100px;background:#EDEBDD;opacity:0.05;filter:blur(90px);animation:blob-pulse 22s ease-in-out infinite;"></div>
+    <div class="hero-blob" aria-hidden="true" style="width:240px;height:240px;top:10px;right:-80px;background:#810100;opacity:0.06;filter:blur(80px);animation:blob-pulse 18s ease-in-out infinite;animation-delay:-6s;"></div>
+    <div class="hero-blob" aria-hidden="true" style="width:320px;height:320px;bottom:-100px;left:25%;background:#EDEBDD;opacity:0.04;filter:blur(110px);animation:blob-pulse 28s ease-in-out infinite;animation-delay:-12s;"></div>
+    <div class="hero-blob" aria-hidden="true" style="width:180px;height:180px;top:35%;right:8%;background:#810100;opacity:0.05;filter:blur(60px);animation:blob-pulse 15s ease-in-out infinite;animation-delay:-3s;"></div>
+
+    <!-- Floating particles — populated by script at bottom of page -->
+    <div id="hero-particles" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <span class="hero-eyebrow">AM AGENCY · Formación Digital 2026</span>
+      <h1 class="hero-h1" id="hero-h1">
+        Marketing digital desde cero.<br />Con estrategia real.
+      </h1>
+      <p class="hero-subtitle">
+        Accede a la clase gratuita y descubre si MADE es para ti.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TOP TICKER — decorative strip between hero and form card.
+       Removed from DOM on form submit; bottom ticker (#modules) stays.
+       ============================================================ -->
+  <section id="ticker-top" aria-hidden="true">
+    <div class="ticker-wrapper">
+      <div class="ticker-track ticker-track--row1">
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+      </div>
+    </div>
+    <div class="ticker-wrapper">
+      <div class="ticker-track ticker-track--row2">
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. FLOATING FORM CARD
+       ============================================================ -->
+  <section id="form-section" aria-labelledby="form-heading">
+    <div class="form-card">
+      <h2 class="form-card-heading" id="form-heading">Accede gratis ahora.</h2>
+      <p class="form-card-subtext">Rellena tus datos y empieza en 30 segundos.</p>
+
+      <form id="lead-form" novalidate>
+        <div class="form-group">
+          <input
+            type="text"
+            id="field-nombre"
+            name="nombre"
+            placeholder="Nombre"
+            autocomplete="given-name"
+            required
+          />
+          <input
+            type="email"
+            id="field-email"
+            name="email"
+            placeholder="Email"
+            autocomplete="email"
+            required
+          />
+          <input
+            type="tel"
+            id="field-whatsapp"
+            name="whatsapp"
+            placeholder="WhatsApp (con prefijo, ej. +34 612 345 678)"
+            autocomplete="tel"
+          />
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          Ver la clase gratuita →
+        </button>
+
+        <div class="trust-row" aria-label="Garantías">
+          <span class="trust-item">Sin spam</span>
+          <span class="trust-item">Acceso inmediato</span>
+          <span class="trust-item">Gratis</span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. MODULES SECTION — HORIZONTAL TICKER BANNER
+       ============================================================ -->
+  <section id="modules" aria-labelledby="modules-heading">
+
+    <h2 class="modules-heading" id="modules-heading">Lo que aprenderás en MADE</h2>
+
+    <!-- Row 1 — faster (35s) -->
+    <div class="ticker-wrapper" aria-hidden="true">
+      <div class="ticker-track ticker-track--row1">
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 — slower (52s), offset start for depth effect -->
+    <div class="ticker-wrapper" aria-hidden="true">
+      <div class="ticker-track ticker-track--row2">
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+        <div class="ticker-set">
+          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       4. VIDEO SECTION (revealed after form submit)
+       ============================================================ -->
+  <section id="video-section" aria-labelledby="video-heading">
+    <h2 class="video-heading" id="video-heading">Tu clase gratuita está lista.</h2>
+    <p class="video-subtext">
+      Mira el vídeo completo — los siguientes pasos se desbloquean al terminar.
+    </p>
+
+    <div class="video-wrapper">
+      <!-- Direct embed — works on file:// and https:// alike -->
+      <iframe
+        id="yt-player"
+        src="https://www.youtube.com/embed/JngUUg487ig?rel=0&modestbranding=1&enablejsapi=1"
+        title="Clase gratuita MADE"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <!-- Decorative progress bar -->
+    <div class="video-progress-bar" aria-hidden="true">
+      <div class="video-progress-fill" id="progress-fill"></div>
+    </div>
+
+    <button id="btn-info-video" class="btn-info" type="button">
+      Solicitar más información →
+    </button>
+  </section>
+
+  <!-- ============================================================
+       5. CTA SECTION (revealed after video ends)
+       ============================================================ -->
+  <section id="cta-section" class="fade-hidden" aria-labelledby="cta-heading">
+    <div class="cta-inner">
+      <h2 class="cta-heading" id="cta-heading">¿Esto resuena contigo?</h2>
+      <p class="cta-body">
+        La llamada es gratuita, sin compromiso y dura 30 minutos.
+        En ella sabrás exactamente si MADE encaja con tu momento.
+      </p>
+
+      <div class="cta-buttons">
+        <!-- TODO: add Calendly URL — replace [CALENDLY_URL] with your booking link, e.g. https://calendly.com/yourname/30min -->
+        <a
+          href="https://calendly.com/amagencycrm/llamada-gratuita-made"
+          class="btn-primary"
+          target="_blank"
+          rel="noopener noreferrer"
+          id="btn-calendly"
+        >
+          Agendar mi llamada gratuita →
+        </a>
+
+        <button id="btn-info-cta" class="btn-info" type="button">
+          Solicitar más información →
+        </button>
+      </div>
+
+      <p class="cta-contact-note">Nos ponemos en contacto contigo en menos de 24h.</p>
+      <p class="cta-footer-note">Plazas limitadas · Inicio 2026 · AM Agency</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6. FOOTER
+       ============================================================ -->
+  <footer id="footer" role="contentinfo">
+    MADE · Formación Digital 2026 · AM AGENCY
+  </footer>
+
+  <!-- ============================================================
+       YOUTUBE IFRAME API
+       ============================================================ -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+    /* ============================================================
+       SUPABASE CONFIG
+       ============================================================ */
+    var SUPABASE_URL = 'https://zggckdkddbwbkauttvjg.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_SoY16PJjYYL-VDmbjIslug_qMa28aB9';
+    var SUPABASE_TABLE = 'leads';
+
+    /* ============================================================
+       YOUTUBE CONFIG
+       Video ID: JngUUg487ig
+       ============================================================ */
+    var YT_VIDEO_ID = 'JngUUg487ig';
+
+    /* ============================================================
+       DOM REFS
+       ============================================================ */
+    var leadForm       = document.getElementById('lead-form');
+    var btnSubmit      = document.getElementById('btn-submit');
+    var formSection    = document.getElementById('form-section');
+    var videoSection   = document.getElementById('video-section');
+    var ctaSection     = document.getElementById('cta-section');
+    var progressFill   = document.getElementById('progress-fill');
+
+    var ytPlayer       = null;
+    var progressTimer  = null;
+    var videoDuration  = 0;
+    var ctaShown       = false;
+    var leadEmail = '';
+
+    /* ============================================================
+       SUPABASE LEAD SAVE
+       POST to Supabase REST API (fails silently to not block UX)
+       ============================================================ */
+    function saveLead(nombre, email, whatsapp) {
+      var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE;
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey':        SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Prefer':        'return=minimal'
+        },
+        body: JSON.stringify({ nombre: nombre, email: email, whatsapp: whatsapp })
+      }).catch(function(err) {
+        console.error('[MADE] Supabase error (non-blocking):', err);
+      });
+    }
+
+    /* ============================================================
+       FORM SUBMIT
+       ============================================================ */
+    leadForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var nombre    = document.getElementById('field-nombre').value.trim();
+      var email     = document.getElementById('field-email').value.trim();
+      var whatsapp  = document.getElementById('field-whatsapp').value.trim();
+
+      if (!nombre || !email) {
+        // Simple inline validation — focus first empty required field
+        if (!nombre) { document.getElementById('field-nombre').focus(); }
+        else          { document.getElementById('field-email').focus(); }
+        return;
+      }
+
+      // Disable button to prevent double-submit
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Enviando…';
+
+      // Fire Meta Pixel Lead event
+      if (typeof fbq === 'function') {
+        fbq('track', 'Lead');
+      }
+
+      // Store email so CTA click handlers can update the lead record
+      leadEmail = email;
+
+      // Save lead (non-blocking — UX proceeds regardless)
+      saveLead(nombre, email, whatsapp);
+
+      // Remove top ticker and form from DOM — no gap left behind
+      var tickerTop = document.getElementById('ticker-top');
+      if (tickerTop) tickerTop.parentNode.removeChild(tickerTop);
+      formSection.parentNode.removeChild(formSection);
+
+      videoSection.classList.add('is-visible');
+
+      // Smooth scroll to video
+      setTimeout(function() {
+        videoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    });
+
+    /* ============================================================
+       YOUTUBE IFRAME API
+       Wraps the already-embedded iframe for end-of-video detection.
+       Degrades gracefully if postMessage is blocked (file:// origin).
+       ============================================================ */
+
+    window.onYouTubeIframeAPIReady = function() {
+      ytPlayer = new YT.Player('yt-player', {
+        events: {
+          onReady:       onPlayerReady,
+          onStateChange: onPlayerStateChange
+        }
+      });
+    };
+
+    function onPlayerReady() {
+      setTimeout(function() {
+        if (ytPlayer && typeof ytPlayer.getDuration === 'function') {
+          videoDuration = ytPlayer.getDuration();
+        }
+      }, 500);
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        if (!videoDuration && ytPlayer) {
+          videoDuration = ytPlayer.getDuration();
+        }
+        startProgressBar();
+      }
+
+      if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.BUFFERING) {
+        stopProgressBar();
+      }
+
+      if (event.data === YT.PlayerState.ENDED) {
+        stopProgressBar();
+        progressFill.style.width = '100%';
+        showCTASection();
+      }
+    }
+
+    /* ============================================================
+       SOLICITAR INFO — PATCH solicito_info + solicito_info_at
+       Used by BOTH the video-section button and the CTA-section button.
+       SQL: ALTER TABLE leads
+              ADD COLUMN IF NOT EXISTS solicito_info boolean DEFAULT false,
+              ADD COLUMN IF NOT EXISTS solicito_info_at timestamptz;
+       ============================================================ */
+    function solicitarInfo(btnEl) {
+      if (!leadEmail) return;
+      btnEl.disabled = true;
+      var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
+              + '?email=eq.' + encodeURIComponent(leadEmail);
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey':        SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Prefer':        'return=minimal'
+        },
+        body: JSON.stringify({
+          solicito_info:    true,
+          solicito_info_at: new Date().toISOString()
+        })
+      }).then(function(res) {
+        if (res.ok) {
+          btnEl.textContent = '✓ Información solicitada';
+          btnEl.style.color = '#888';
+          btnEl.style.borderColor = '#888';
+        } else {
+          btnEl.disabled = false;
+        }
+      }).catch(function(err) {
+        console.error('[MADE] Supabase solicitar info error (non-blocking):', err);
+        btnEl.disabled = false;
+      });
+    }
+
+    /* Video-section "Solicitar más información" — Supabase update only, no CTA reveal */
+    var btnInfoVideo = document.getElementById('btn-info-video');
+    if (btnInfoVideo) {
+      btnInfoVideo.addEventListener('click', function() {
+        solicitarInfo(btnInfoVideo);
+      });
+    }
+
+    /* ============================================================
+       CALENDLY CLICK TRACKING — PATCH cta_clicked on booking intent
+       SQL: ALTER TABLE leads
+              ADD COLUMN IF NOT EXISTS cta_clicked text,
+              ADD COLUMN IF NOT EXISTS cta_clicked_at timestamptz;
+       ============================================================ */
+    function trackCTAClick(label) {
+      if (!leadEmail) return;
+      var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
+              + '?email=eq.' + encodeURIComponent(leadEmail);
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey':        SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Prefer':        'return=minimal'
+        },
+        body: JSON.stringify({
+          cta_clicked:    label,
+          cta_clicked_at: new Date().toISOString()
+        })
+      }).catch(function(err) {
+        console.error('[MADE] Supabase CTA track error (non-blocking):', err);
+      });
+    }
+
+    var btnCalendly = document.getElementById('btn-calendly');
+    if (btnCalendly) {
+      btnCalendly.addEventListener('click', function() {
+        trackCTAClick('Agendar mi llamada gratuita');
+      });
+    }
+
+    /* CTA-section "Solicitar más información" — same Supabase update, shows confirmation */
+    var btnInfoCta = document.getElementById('btn-info-cta');
+    if (btnInfoCta) {
+      btnInfoCta.addEventListener('click', function() {
+        solicitarInfo(btnInfoCta);
+      });
+    }
+
+    /* ============================================================
+       PROGRESS BAR
+       ============================================================ */
+    function startProgressBar() {
+      if (progressTimer) return; // already running
+      progressTimer = setInterval(function() {
+        if (!ytPlayer || !videoDuration) return;
+        var current  = ytPlayer.getCurrentTime() || 0;
+        var pct      = Math.min((current / videoDuration) * 100, 100);
+        progressFill.style.width = pct + '%';
+      }, 500);
+    }
+
+    function stopProgressBar() {
+      clearInterval(progressTimer);
+      progressTimer = null;
+    }
+
+    /* ============================================================
+       REVEAL CTA SECTION
+       ============================================================ */
+    function showCTASection() {
+      if (ctaShown) return;
+      ctaShown = true;
+
+      // Fire Meta Pixel ViewContent event
+      if (typeof fbq === 'function') {
+        fbq('track', 'ViewContent');
+      }
+
+      ctaSection.classList.remove('fade-hidden');
+      ctaSection.classList.add('fade-visible');
+
+      setTimeout(function() {
+        ctaSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  </script>
+
+  <!-- ============================================================
+       FLOATING PARTICLES — generate DOM nodes, CSS does all animation
+       ============================================================ -->
+  <script>
+    (function () {
+      var container = document.getElementById('hero-particles');
+      if (!container) return;
+      for (var i = 0; i < 22; i++) {
+        var p     = document.createElement('div');
+        p.className = 'particle';
+        var size  = (2 + Math.random() * 2).toFixed(1);
+        var left  = (Math.random() * 96).toFixed(1);
+        var top   = (5 + Math.random() * 85).toFixed(1);
+        var dur   = (7 + Math.random() * 9).toFixed(1);
+        var delay = (-Math.random() * 16).toFixed(1);
+        var drift = ((Math.random() - 0.5) * 80).toFixed(1);
+        p.style.cssText =
+          'width:'   + size  + 'px;' +
+          'height:'  + size  + 'px;' +
+          'left:'    + left  + '%;'  +
+          'top:'     + top   + '%;'  +
+          '--dur:'   + dur   + 's;'  +
+          '--delay:' + delay + 's;'  +
+          '--drift:' + drift + 'px';
+        container.appendChild(p);
+      }
+    }());
+  </script>
+
+</body>
+</html>
