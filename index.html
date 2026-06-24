@@ -1002,7 +1002,7 @@
       <div class="video-progress-fill" id="progress-fill"></div>
     </div>
 
-    <button id="btn-info-video" class="btn-info" type="button">
+    <button id="btn-info-video" type="button" style="display:block;width:100%;max-width:720px;margin:16px auto 0;padding:0.8rem;background:transparent;border:1px solid rgba(237,235,221,0.3);border-radius:8px;color:rgba(237,235,221,0.6);font-family:var(--font-body);font-size:0.82rem;cursor:pointer;">
       Solicitar más información →
     </button>
   </section>
@@ -1018,30 +1018,17 @@
         En ella sabrás exactamente si MADE encaja con tu momento.
       </p>
 
-      <div class="cta-buttons">
-        <!-- TODO: add Calendly URL — replace [CALENDLY_URL] with your booking link, e.g. https://calendly.com/yourname/30min -->
-        <a
-          href="https://calendly.com/amagencycrm/llamada-gratuita-made"
-          class="btn-primary"
-          target="_blank"
-          rel="noopener noreferrer"
-          id="btn-calendly"
-        >
-          Agendar mi llamada gratuita →
-        </a>
+      <a
+        href="https://calendly.com/amagencycrm/llamada-gratuita-made"
+        class="btn-primary"
+        target="_blank"
+        rel="noopener noreferrer"
+        id="btn-calendly"
+      >
+        Agendar mi llamada gratuita →
+      </a>
 
-        <button id="btn-info-cta" class="btn-info" type="button">
-          Solicitar más información →
-        </button>
-      </div>
-
-      <p class="cta-contact-note">Nos ponemos en contacto contigo en menos de 24h.</p>
       <p class="cta-footer-note">Plazas limitadas · Inicio 2026 · AM Agency</p>
-    </div>
-
-    <div id="cta-confirmation" class="cta-inner" style="display:none;">
-      <p class="cta-confirm-main">Nos ponemos en contacto contigo en menos de 24h.</p>
-      <p class="cta-confirm-sub">Revisa tu email y WhatsApp.</p>
     </div>
   </section>
 
@@ -1567,53 +1554,13 @@
       }
     }
 
-    /* ============================================================
-       SOLICITAR INFO — PATCH solicito_info + solicito_info_at
-       Used by BOTH the video-section button and the CTA-section button.
-       SQL: ALTER TABLE leads
-              ADD COLUMN IF NOT EXISTS solicito_info boolean DEFAULT false,
-              ADD COLUMN IF NOT EXISTS solicito_info_at timestamptz;
-       ============================================================ */
-    function solicitarInfo(btnEl) {
-      if (!leadEmail) return;
-      btnEl.disabled = true;
-      var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
-              + '?email=eq.' + encodeURIComponent(leadEmail);
-      fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey':        SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Prefer':        'return=minimal'
-        },
-        body: JSON.stringify({
-          solicito_info:    true,
-          solicito_info_at: new Date().toISOString()
-        })
-      }).then(function(res) {
-        if (res.ok) {
-          btnEl.textContent = '✓ Información solicitada';
-          btnEl.style.color = '#888';
-          btnEl.style.borderColor = '#888';
-        } else {
-          btnEl.disabled = false;
-        }
-      }).catch(function(err) {
-        console.error('[MADE] Supabase solicitar info error (non-blocking):', err);
-        btnEl.disabled = false;
-      });
-    }
 
-    /* Video-section "Solicitar más información" — reveal CTA + Supabase update */
+    /* Below-video "Solicitar más información" — Supabase PATCH only, no scroll/reveal */
     var btnInfoVideo = document.getElementById('btn-info-video');
     if (btnInfoVideo) {
       btnInfoVideo.addEventListener('click', function() {
-        showCTASection();
         btnInfoVideo.disabled = true;
         btnInfoVideo.textContent = '✓ Información solicitada';
-        btnInfoVideo.style.color = '#888';
-        btnInfoVideo.style.borderColor = '#888';
         if (leadEmail) {
           var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
                   + '?email=eq.' + encodeURIComponent(leadEmail);
@@ -1670,37 +1617,6 @@
       });
     }
 
-    /* CTA-section "Solicitar más información" — hide cta-inner, show confirmation */
-    var btnInfoCta = document.getElementById('btn-info-cta');
-    if (btnInfoCta) {
-      btnInfoCta.addEventListener('click', function() {
-        console.log('SOLICITAR INFO CLICKED');
-        var ctaInner        = document.getElementById('cta-inner');
-        var ctaConfirmation = document.getElementById('cta-confirmation');
-        console.log('[MADE] cta-inner:', ctaInner, 'cta-confirmation:', ctaConfirmation);
-        if (ctaInner)        ctaInner.style.display        = 'none';
-        if (ctaConfirmation) ctaConfirmation.style.display = 'block';
-        if (leadEmail) {
-          var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
-                  + '?email=eq.' + encodeURIComponent(leadEmail);
-          fetch(url, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey':        SUPABASE_KEY,
-              'Authorization': 'Bearer ' + SUPABASE_KEY,
-              'Prefer':        'return=minimal'
-            },
-            body: JSON.stringify({
-              solicito_info:    true,
-              solicito_info_at: new Date().toISOString()
-            })
-          }).catch(function(err) {
-            console.error('[MADE] Supabase solicitar info error (non-blocking):', err);
-          });
-        }
-      });
-    }
 
     /* ============================================================
        PROGRESS BAR
