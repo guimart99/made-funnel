@@ -1045,11 +1045,34 @@
       });
     }
 
-    /* Video-section "Solicitar más información" — Supabase update only, no CTA reveal */
+    /* Video-section "Solicitar más información" — reveal CTA + Supabase update */
     var btnInfoVideo = document.getElementById('btn-info-video');
     if (btnInfoVideo) {
       btnInfoVideo.addEventListener('click', function() {
-        solicitarInfo(btnInfoVideo);
+        showCTASection();
+        btnInfoVideo.disabled = true;
+        btnInfoVideo.textContent = '✓ Información solicitada';
+        btnInfoVideo.style.color = '#888';
+        btnInfoVideo.style.borderColor = '#888';
+        if (leadEmail) {
+          var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
+                  + '?email=eq.' + encodeURIComponent(leadEmail);
+          fetch(url, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey':        SUPABASE_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_KEY,
+              'Prefer':        'return=minimal'
+            },
+            body: JSON.stringify({
+              solicito_info:    true,
+              solicito_info_at: new Date().toISOString()
+            })
+          }).catch(function(err) {
+            console.error('[MADE] Supabase solicitar info error (non-blocking):', err);
+          });
+        }
       });
     }
 
