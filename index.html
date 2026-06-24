@@ -1005,7 +1005,7 @@
     <button id="btn-info-video" type="button" style="display:block;width:100%;max-width:720px;margin:16px auto 0;padding:0.8rem;background:transparent;border:1px solid rgba(237,235,221,0.3);border-radius:8px;color:rgba(237,235,221,0.6);font-family:var(--font-body);font-size:0.82rem;cursor:pointer;">
       Solicitar más información →
     </button>
-    <p style="font-size:0.75rem;color:rgba(237,235,221,0.35);text-align:center;margin-top:0.4rem;">Nos ponemos en contacto contigo en menos de 24h.</p>
+    <p id="info-video-note" style="display:none;font-size:0.75rem;color:rgba(237,235,221,0.35);text-align:center;margin-top:0.4rem;opacity:0;transition:opacity 0.4s ease;">Nos ponemos en contacto contigo en menos de 24h.</p>
   </section>
 
   <!-- ============================================================
@@ -1562,6 +1562,14 @@
       btnInfoVideo.addEventListener('click', function() {
         btnInfoVideo.disabled = true;
         btnInfoVideo.textContent = '✓ Información solicitada';
+        btnInfoVideo.style.background   = 'rgba(237,235,221,0.08)';
+        btnInfoVideo.style.borderColor  = 'rgba(237,235,221,0.15)';
+        btnInfoVideo.style.color        = 'rgba(237,235,221,0.4)';
+        var note = document.getElementById('info-video-note');
+        if (note) {
+          note.style.display = 'block';
+          setTimeout(function() { note.style.opacity = '1'; }, 20);
+        }
         if (leadEmail) {
           var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
                   + '?email=eq.' + encodeURIComponent(leadEmail);
