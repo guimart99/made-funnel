@@ -270,6 +270,12 @@
       background: #fff;
     }
 
+    .field-error {
+      font-size: 0.82rem;
+      color: #810100;
+      margin-top: -6px;
+    }
+
     .btn-submit {
       width: 100%;
       padding: 16px 24px;
@@ -749,6 +755,7 @@
             autocomplete="email"
             required
           />
+          <p class="field-error" id="error-email" style="display:none;">Introduce un email válido</p>
           <input
             type="tel"
             id="field-whatsapp"
@@ -756,6 +763,7 @@
             placeholder="WhatsApp (con prefijo, ej. +34 612 345 678)"
             autocomplete="tel"
           />
+          <p class="field-error" id="error-whatsapp" style="display:none;">Introduce un número de WhatsApp válido con prefijo de país (ej. +34 612 345 678)</p>
         </div>
 
         <button type="submit" class="btn-submit" id="btn-submit">
@@ -948,14 +956,46 @@
 
       var nombre    = document.getElementById('field-nombre').value.trim();
       var email     = document.getElementById('field-email').value.trim();
-      var whatsapp  = document.getElementById('field-whatsapp').value.trim();
+      var whatsappRaw = document.getElementById('field-whatsapp').value.trim();
 
-      if (!nombre || !email) {
-        // Simple inline validation — focus first empty required field
-        if (!nombre) { document.getElementById('field-nombre').focus(); }
-        else          { document.getElementById('field-email').focus(); }
+      var errorEmail    = document.getElementById('error-email');
+      var errorWhatsapp = document.getElementById('error-whatsapp');
+      errorEmail.style.display    = 'none';
+      errorWhatsapp.style.display = 'none';
+
+      var valid = true;
+
+      if (!nombre) {
+        document.getElementById('field-nombre').focus();
         return;
       }
+
+      var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRe.test(email)) {
+        errorEmail.style.display = 'block';
+        document.getElementById('field-email').focus();
+        valid = false;
+      }
+
+      var whatsapp = '';
+      if (whatsappRaw) {
+        var cleaned = whatsappRaw.replace(/[\s\-\.\(\)]/g, '');
+        if (cleaned.startsWith('00')) {
+          cleaned = '+' + cleaned.slice(2);
+        } else if (!cleaned.startsWith('+')) {
+          cleaned = '+34' + cleaned;
+        }
+        var digitCount = cleaned.replace(/\D/g, '').length;
+        if (digitCount < 7) {
+          errorWhatsapp.style.display = 'block';
+          if (valid) document.getElementById('field-whatsapp').focus();
+          valid = false;
+        } else {
+          whatsapp = cleaned;
+        }
+      }
+
+      if (!valid) return;
 
       // Disable button to prevent double-submit
       btnSubmit.disabled = true;
@@ -1130,15 +1170,16 @@
       });
     }
 
-    /* CTA-section "Solicitar más información" — hide buttons, show confirmation, fire Supabase */
+    /* CTA-section "Solicitar más información" — hide all content, show only confirmation */
     var btnInfoCta = document.getElementById('btn-info-cta');
     if (btnInfoCta) {
       btnInfoCta.addEventListener('click', function() {
-        var ctaButtons = document.querySelector('.cta-buttons');
-        var ctaContactNote = document.querySelector('.cta-contact-note');
         var ctaConfirmation = document.getElementById('cta-confirmation');
-        if (ctaButtons) ctaButtons.style.display = 'none';
-        if (ctaContactNote) ctaContactNote.style.display = 'none';
+        var toHide = ['.cta-heading', '.cta-body', '.cta-buttons', '.cta-contact-note', '.cta-footer-note'];
+        toHide.forEach(function(sel) {
+          var el = document.querySelector(sel);
+          if (el) el.style.display = 'none';
+        });
         if (ctaConfirmation) ctaConfirmation.style.display = 'block';
         if (leadEmail) {
           var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
