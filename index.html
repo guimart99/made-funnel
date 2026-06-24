@@ -604,6 +604,21 @@
       letter-spacing: 0.05em;
     }
 
+    .cta-confirm-main {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--noir);
+      text-align: center;
+      padding: 1.5rem 0 0.5rem;
+    }
+
+    .cta-confirm-sub {
+      font-size: 0.8rem;
+      color: #888;
+      text-align: center;
+    }
+
     /* ============================================================
        6. FOOTER
        ============================================================ */
@@ -851,6 +866,11 @@
         <button id="btn-info-cta" class="btn-info" type="button">
           Solicitar más información →
         </button>
+      </div>
+
+      <div id="cta-confirmation" style="display:none;">
+        <p class="cta-confirm-main">Nos ponemos en contacto contigo en menos de 24h.</p>
+        <p class="cta-confirm-sub">Revisa tu email y WhatsApp.</p>
       </div>
 
       <p class="cta-contact-note">Nos ponemos en contacto contigo en menos de 24h.</p>
@@ -1110,11 +1130,35 @@
       });
     }
 
-    /* CTA-section "Solicitar más información" — same Supabase update, shows confirmation */
+    /* CTA-section "Solicitar más información" — hide buttons, show confirmation, fire Supabase */
     var btnInfoCta = document.getElementById('btn-info-cta');
     if (btnInfoCta) {
       btnInfoCta.addEventListener('click', function() {
-        solicitarInfo(btnInfoCta);
+        var ctaButtons = document.querySelector('.cta-buttons');
+        var ctaContactNote = document.querySelector('.cta-contact-note');
+        var ctaConfirmation = document.getElementById('cta-confirmation');
+        if (ctaButtons) ctaButtons.style.display = 'none';
+        if (ctaContactNote) ctaContactNote.style.display = 'none';
+        if (ctaConfirmation) ctaConfirmation.style.display = 'block';
+        if (leadEmail) {
+          var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
+                  + '?email=eq.' + encodeURIComponent(leadEmail);
+          fetch(url, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey':        SUPABASE_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_KEY,
+              'Prefer':        'return=minimal'
+            },
+            body: JSON.stringify({
+              solicito_info:    true,
+              solicito_info_at: new Date().toISOString()
+            })
+          }).catch(function(err) {
+            console.error('[MADE] Supabase solicitar info error (non-blocking):', err);
+          });
+        }
       });
     }
 
