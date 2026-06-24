@@ -84,11 +84,13 @@
 
     /* Fade-in class toggled by JS */
     .fade-hidden {
+      display: none;
       opacity: 0;
       transform: translateY(24px);
       pointer-events: none;
     }
     .fade-visible {
+      display: block;
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
@@ -1672,6 +1674,7 @@
     var btnInfoCta = document.getElementById('btn-info-cta');
     if (btnInfoCta) {
       btnInfoCta.addEventListener('click', function() {
+        console.log('SOLICITAR INFO CLICKED');
         var ctaInner        = document.getElementById('cta-inner');
         var ctaConfirmation = document.getElementById('cta-confirmation');
         console.log('[MADE] cta-inner:', ctaInner, 'cta-confirmation:', ctaConfirmation);
@@ -1729,6 +1732,7 @@
         fbq('track', 'ViewContent');
       }
 
+      document.getElementById('cta-section').style.display = 'block';
       ctaSection.classList.remove('fade-hidden');
       ctaSection.classList.add('fade-visible');
 
