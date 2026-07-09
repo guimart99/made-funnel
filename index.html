@@ -271,6 +271,15 @@
       background: #fff;
     }
 
+    .field-label {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 0.3rem;
+    }
+
     .field-error {
       font-size: 0.82rem;
       color: #810100;
@@ -933,18 +942,16 @@
             </div>
           </div>
           <p class="field-error" id="error-whatsapp" style="display:none;">Introduce un número de WhatsApp válido (mínimo 5 dígitos)</p>
-        </div>
-
-        <div class="field-group">
-          <label class="field-label" for="inp-instagram">Instagram (opcional)</label>
-          <input
-            type="text"
-            class="field-input"
-            id="inp-instagram"
-            name="instagram"
-            placeholder="@tuusuario"
-            autocomplete="off"
-          />
+          <div>
+            <label class="field-label" for="inp-instagram">Instagram (opcional)</label>
+            <input
+              type="text"
+              id="inp-instagram"
+              name="instagram"
+              placeholder="@tuusuario"
+              autocomplete="off"
+            />
+          </div>
         </div>
 
         <button type="submit" class="btn-submit" id="btn-submit">
