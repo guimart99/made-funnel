@@ -935,6 +935,18 @@
           <p class="field-error" id="error-whatsapp" style="display:none;">Introduce un número de WhatsApp válido (mínimo 5 dígitos)</p>
         </div>
 
+        <div class="field-group">
+          <label class="field-label" for="inp-instagram">Instagram (opcional)</label>
+          <input
+            type="text"
+            class="field-input"
+            id="inp-instagram"
+            name="instagram"
+            placeholder="@tuusuario"
+            autocomplete="off"
+          />
+        </div>
+
         <button type="submit" class="btn-submit" id="btn-submit">
           Ver la clase gratuita →
         </button>
@@ -1427,7 +1439,7 @@
        SUPABASE LEAD SAVE
        POST to Supabase REST API (fails silently to not block UX)
        ============================================================ */
-    function saveLead(nombre, email, whatsapp) {
+    function saveLead(nombre, email, whatsapp, instagram) {
       var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE;
       return fetch(url, {
         method: 'POST',
@@ -1437,7 +1449,7 @@
           'Authorization': 'Bearer ' + SUPABASE_KEY,
           'Prefer':        'return=minimal'
         },
-        body: JSON.stringify({ nombre: nombre, email: email, whatsapp: whatsapp })
+        body: JSON.stringify({ nombre: nombre, email: email, whatsapp: whatsapp, instagram: instagram || null })
       });
     }
 
@@ -1499,7 +1511,9 @@
         }, 80);
       }
 
-      saveLead(nombre, email, whatsapp)
+      var instagram = document.getElementById('inp-instagram').value.trim();
+
+      saveLead(nombre, email, whatsapp, instagram)
         .then(function(res) {
           if (!res.ok) {
             return res.json().then(function(body) {
