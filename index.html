@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MADE · Formación Digital 2026 · AM Agency</title>
+  <title>Clase gratuita · Martes 29 de septiembre · 19:00h</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Meta Pixel -->
   <script>
@@ -31,18 +31,24 @@
 
   <style>
     /* ============================================================
-       CSS CUSTOM PROPERTIES — BRAND COLORS
+       CSS CUSTOM PROPERTIES — MADE IDENTITY
+       --cherry is the single accent, reserved for CTAs
        ============================================================ */
     :root {
       --cotton:  #EDEBDD;
       --cherry:  #810100;
+      --cherry-hover: #6a0100;
       --maroon:  #830000;
       --noir:    #1B1717;
+      --muted:   #5c5652;
+      --line:    rgba(27, 23, 23, 0.14);
+      --line-light: rgba(237, 235, 221, 0.22);
 
       --font-display: 'Playfair Display', Georgia, serif;
       --font-body:    'Inter', system-ui, sans-serif;
 
-      --transition-fade: opacity 0.6s ease, transform 0.6s ease;
+      --topbar-h: 56px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     /* ============================================================
@@ -65,767 +71,380 @@
       color: var(--noir);
       min-width: 320px;
       overflow-x: hidden;
+      line-height: 1.5;
+      padding-top: var(--topbar-h);
+      -webkit-font-smoothing: antialiased;
     }
 
+    a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
-    a   { color: inherit; text-decoration: none; }
 
-    /* ============================================================
-       UTILITY
-       ============================================================ */
-    .visually-hidden {
-      position: absolute;
-      width: 1px; height: 1px;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      white-space: nowrap;
-    }
-
-    /* Fade-in class toggled by JS */
-    .fade-hidden {
-      display: none;
-      opacity: 0;
-      transform: translateY(24px);
-      pointer-events: none;
-    }
-    .fade-visible {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-      transition: var(--transition-fade);
+    .container {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
 
     /* ============================================================
-       1. HERO SECTION
+       1. TOP BAR (fixed) — event info + compact countdown
        ============================================================ */
-    #hero {
-      position: relative;
-      background: var(--maroon);
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: var(--topbar-h);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 0 16px;
+      background: var(--noir);
       color: var(--cotton);
-      padding: 72px 24px 40px;
-      overflow: hidden;
       text-align: center;
-    }
-
-    /* Ghost watermark text */
-    #hero::before {
-      content: 'MADE';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: var(--font-display);
-      font-size: clamp(120px, 30vw, 300px);
-      font-weight: 900;
-      color: var(--cotton);
-      opacity: 0.04;
       white-space: nowrap;
-      pointer-events: none;
-      user-select: none;
-      letter-spacing: -0.02em;
     }
 
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 720px;
-      margin: 0 auto;
+    .topbar-info {
+      font-size: 0.74rem;
+      letter-spacing: 0.3px;
+      opacity: 0.85;
     }
 
-    .hero-eyebrow {
-      display: inline-block;
-      font-family: var(--font-body);
-      font-size: 0.75rem;
+    .topbar-countdown {
+      font-size: 0.86rem;
       font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(237, 235, 221, 0.65);
-      margin-bottom: 20px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.4px;
     }
 
-    .hero-h1 {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 5.5vw, 3.5rem);
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.01em;
-      margin-bottom: 20px;
-    }
-
-    .hero-subtitle {
-      font-size: clamp(1rem, 2.5vw, 1.2rem);
+    .topbar-countdown .cd-label {
       font-weight: 400;
-      line-height: 1.6;
-      color: rgba(237, 235, 221, 0.8);
-      max-width: 520px;
-      margin: 0 auto;
+      opacity: 0.7;
+      margin-right: 6px;
     }
 
-    /* Floating particles container */
-    #hero-particles {
+    .cd-live { display: none; }
+    .topbar-countdown.is-live .cd-running { display: none; }
+    .topbar-countdown.is-live .cd-live    { display: inline; }
+
+    .cd-live::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: #ff4d4d;
+      vertical-align: 1px;
+      animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0.25; } }
+
+    /* ============================================================
+       CTA BUTTON (shared)
+       ============================================================ */
+    .btn-cta {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 56px;
+      padding: 15px 24px;
+      background: var(--cherry);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 1.02rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 10px 24px -12px rgba(129, 1, 0, 0.7);
+      transition: background 0.25s ease, transform 0.25s var(--ease), box-shadow 0.25s ease;
+      -webkit-appearance: none;
+    }
+
+    .btn-cta .arrow { transition: transform 0.25s var(--ease); }
+
+    .btn-cta:hover {
+      background: var(--cherry-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -12px rgba(129, 1, 0, 0.8);
+    }
+    .btn-cta:hover .arrow { transform: translateX(4px); }
+    .btn-cta:active   { transform: translateY(0) scale(0.99); }
+    .btn-cta:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .btn-cta:focus-visible { outline: 2px solid var(--noir); outline-offset: 3px; }
+
+    /* Soft pulse — primary CTAs only */
+    .btn-pulse::after {
+      content: '';
       position: absolute;
       inset: 0;
+      border-radius: inherit;
+      box-shadow: 0 0 0 0 rgba(129, 1, 0, 0.45);
+      animation: pulse 2.8s ease-out infinite;
       pointer-events: none;
-      z-index: 0;
     }
 
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(237, 235, 221, 0.15);
-      pointer-events: none;
-      animation: float-particle var(--dur, 8s) ease-in var(--delay, 0s) infinite;
-    }
-
-    @keyframes float-particle {
-      0%   { transform: translateY(0)     translateX(0);                  opacity: 0;   }
-      8%   { opacity: 0.9; }
-      90%  { opacity: 0.5; }
-      100% { transform: translateY(-620px) translateX(var(--drift, 20px)); opacity: 0;  }
-    }
-
-    /* Decorative background blobs */
-    .hero-blob {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    @keyframes blob-pulse {
-      0%,  100% { transform: scale(1)    rotate(0deg);   }
-      33%        { transform: scale(1.12) rotate(120deg); }
-      66%        { transform: scale(0.92) rotate(240deg); }
-    }
-
-    /* Top ticker strip — sits between hero and form card, removed on submit */
-    #ticker-top {
-      background: var(--maroon);
-      overflow: hidden;
-      padding: 1.25rem 0;
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(129, 1, 0, 0.45); }
+      60%  { box-shadow: 0 0 0 12px rgba(129, 1, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(129, 1, 0, 0); }
     }
 
     /* ============================================================
-       2. FLOATING FORM CARD
+       2. HERO + FORM
        ============================================================ */
-    #form-section {
-      position: relative;
-      z-index: 10;
-      padding: 0 16px;
-      margin-top: -100px; /* pulls up into hero */
+    .hero { padding-top: 24px; }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.95rem, 8.6vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
     }
+
+    .hero h1 em { font-style: italic; font-weight: 400; }
 
     .form-card {
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(27, 23, 23, 0.18), 0 4px 16px rgba(27, 23, 23, 0.08);
-      padding: 40px 32px 36px;
-      max-width: 520px;
-      margin: 0 auto;
+      border-radius: 6px;
+      padding: 20px 18px;
+      box-shadow: 0 1px 0 var(--line), 0 24px 48px -28px rgba(27, 23, 23, 0.35);
     }
 
-    .form-card-heading {
-      font-family: var(--font-display);
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--noir);
-      margin-bottom: 6px;
-      line-height: 1.2;
-    }
-
-    .form-card-subtext {
-      font-size: 0.9rem;
-      color: #6b6868;
-      margin-bottom: 28px;
+    .form-intro {
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 14px;
     }
 
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .form-group input {
       width: 100%;
       padding: 14px 16px;
       border: 1.5px solid #e0ddd5;
-      border-radius: 8px;
+      border-radius: 4px;
       font-family: var(--font-body);
       font-size: 1rem;
       color: var(--noir);
-      background: #fafafa;
+      background: #fafaf7;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
       -webkit-appearance: none;
     }
 
-    .form-group input::placeholder {
-      color: #b0ada5;
-    }
+    .form-group input::placeholder { color: #a8a498; }
 
     .form-group input:focus {
       outline: none;
-      border-color: var(--cherry);
-      box-shadow: 0 0 0 3px rgba(129, 1, 0, 0.1);
+      border-color: var(--noir);
+      box-shadow: 0 0 0 3px rgba(27, 23, 23, 0.08);
       background: #fff;
-    }
-
-    .field-label {
-      display: block;
-      font-size: 0.68rem;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: #999;
-      margin-bottom: 0.3rem;
     }
 
     .field-error {
       font-size: 0.82rem;
-      color: #810100;
-      margin-top: -6px;
+      color: var(--cherry);
+      margin-top: -4px;
     }
 
     /* ============================================================
-       PHONE PICKER
+       HOST — small circular photo + authority line
        ============================================================ */
-    .phone-wrapper {
-      position: relative;
-      display: flex;
-      align-items: stretch;
-      border: 1.5px solid #e0ddd5;
-      border-radius: 8px;
-      background: #fafafa;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .phone-wrapper:focus-within {
-      border-color: var(--cherry);
-      box-shadow: 0 0 0 3px rgba(129, 1, 0, 0.1);
-      background: #fff;
-    }
-
-    .country-pill {
+    .host {
       display: flex;
       align-items: center;
-      gap: 5px;
-      padding: 0 10px 0 14px;
-      background: transparent;
-      border: none;
-      border-right: 1.5px solid #e0ddd5;
-      cursor: pointer;
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      color: var(--noir);
-      white-space: nowrap;
+      gap: 14px;
+      padding: 24px 0 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .host-photo {
+      position: relative;
       flex-shrink: 0;
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: linear-gradient(160deg, #d9d5c3 0%, #c9c4b0 100%);
     }
 
-    .country-pill:focus { outline: none; }
-
-    .pill-chevron {
-      font-size: 0.65rem;
-      color: #aaa;
-    }
-
-    #field-phone-number {
-      flex: 1;
-      padding: 14px 16px !important;
-      border: none !important;
-      border-radius: 0 8px 8px 0 !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      font-family: var(--font-body);
-      font-size: 1rem;
-      color: var(--noir);
-      min-width: 0;
-    }
-
-    #field-phone-number::placeholder { color: #b0ada5; }
-    #field-phone-number:focus { outline: none; }
-
-    .country-dropdown {
+    /* Neutral placeholder — visible until madelene.jpg exists */
+    .host-photo::before {
+      content: 'M';
       position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      width: 100%;
-      min-width: 260px;
-      background: #fff;
-      border: 1.5px solid #e0ddd5;
-      border-radius: 8px;
-      box-shadow: 0 8px 28px rgba(27, 23, 23, 0.14);
-      z-index: 200;
-      overflow: hidden;
-    }
-
-    #country-search {
-      display: block;
-      width: 100%;
-      padding: 10px 14px !important;
-      border: none !important;
-      border-bottom: 1.5px solid #e0ddd5 !important;
-      border-radius: 0 !important;
-      background: #fff !important;
-      box-shadow: none !important;
-      font-family: var(--font-body);
-      font-size: 0.875rem;
-      color: var(--noir);
-    }
-
-    #country-search:focus {
-      border-bottom-color: #e0ddd5 !important;
-      box-shadow: none !important;
-      background: #fff !important;
-    }
-
-    #country-search::placeholder { color: #b0ada5; }
-
-    .country-list {
-      list-style: none;
-      max-height: 200px;
-      overflow-y: auto;
-      margin: 0;
-      padding: 4px 0;
-    }
-
-    .country-option {
+      inset: 0;
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 0.875rem;
-      font-family: var(--font-body);
-      color: var(--noir);
-      transition: background 0.1s ease;
-    }
-
-    .country-option:hover,
-    .country-option.is-active {
-      background: rgba(129, 1, 0, 0.06);
-    }
-
-    .country-option .opt-name {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .country-option .opt-code {
-      font-size: 0.8rem;
-      color: #999;
-      flex-shrink: 0;
-    }
-
-    .country-no-results {
-      padding: 10px 14px;
-      font-size: 0.85rem;
-      color: #aaa;
-      text-align: center;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 16px 24px;
-      background: var(--cherry);
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-      letter-spacing: 0.01em;
-    }
-
-    .btn-submit:hover {
-      background: #6b0000;
-      box-shadow: 0 6px 20px rgba(129, 1, 0, 0.35);
-      transform: translateY(-1px);
-    }
-
-    .btn-submit:active {
-      transform: translateY(0);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .trust-row {
-      display: flex;
       justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    .trust-item {
-      font-size: 0.78rem;
-      color: #9a9390;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .trust-item::before {
-      content: '✓';
-      color: var(--cherry);
-      font-weight: 700;
-    }
-
-    /* ============================================================
-       3. MODULES — TICKER BANNER
-       ============================================================ */
-    #modules {
-      background: var(--maroon);
-      color: var(--cotton);
-      padding: 3rem 0 1.75rem;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .modules-heading {
       font-family: var(--font-display);
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 700;
-      margin-bottom: 2rem;
-      padding: 0 24px;
-    }
-
-    .ticker-wrapper {
-      overflow: hidden;
-      width: 100%;
-      padding: 0.5rem 0;
-    }
-
-    .ticker-track {
-      display: flex;
-      flex-wrap: nowrap;
-      width: max-content;
-      will-change: transform;
-    }
-
-    .ticker-track--row1 {
-      animation: ticker-left 35s linear infinite;
-    }
-
-    .ticker-track--row2 {
-      animation: ticker-left 52s linear infinite;
-      animation-delay: -18s;
-    }
-
-    @keyframes ticker-left {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-33.3333%); }
-    }
-
-    .ticker-set {
-      display: inline-flex;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .ticker-item {
-      font-family: var(--font-display);
+      font-size: 1.9rem;
       font-style: italic;
-      font-size: 1.1rem;
-      color: rgba(237, 235, 221, 0.85);
-      padding: 0 0.4rem;
-      white-space: nowrap;
+      color: rgba(27, 23, 23, 0.2);
     }
 
-    .ticker-sep {
-      color: var(--cherry);
-      font-style: normal;
-      padding: 0 0.8rem;
-      font-size: 1rem;
-      line-height: 1;
-    }
-
-    /* ============================================================
-       4. VIDEO SECTION (hidden until form submitted)
-       ============================================================ */
-    #video-section {
-      background: var(--noir);
-      color: var(--cotton);
-      padding: 80px 24px;
-      text-align: center;
-      display: none; /* JS shows this */
-    }
-
-    #video-section.is-visible {
-      display: block;
-    }
-
-    .video-heading {
-      font-family: var(--font-display);
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .video-subtext {
-      font-size: 1rem;
-      color: rgba(237, 235, 221, 0.7);
-      max-width: 480px;
-      margin: 0 auto 40px;
-      line-height: 1.6;
-    }
-
-    .video-wrapper {
-      position: relative;
-      max-width: 720px;
-      margin: 0 auto;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #000;
-      aspect-ratio: 16 / 9;
-    }
-
-    /* YouTube embed iframe — always visible, fills 16/9 wrapper */
-    #yt-player {
+    .host-photo img {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      border: none;
+      object-fit: cover;
+      object-position: 50% 20%;
     }
 
-    /* "Solicitar más información" — cherry border + text, transparent bg */
-    .btn-info {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 16px 28px;
-      background: transparent;
-      color: var(--cherry);
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      font-weight: 500;
-      border: 1.5px solid var(--cherry);
-      border-radius: 8px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s ease;
-      letter-spacing: 0.01em;
+    .host p {
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: var(--muted);
     }
 
-    .btn-info:hover {
-      background: rgba(129, 1, 0, 0.06);
-    }
-
-    /* Video-section instance — matches the 720px video wrapper */
-    #btn-info-video {
-      max-width: 720px;
-      margin: 20px auto 0;
-      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-    }
-
-    @keyframes btn-pulse {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
-
-    #btn-info-video.confirmed {
-      animation: btn-pulse 0.3s ease;
-    }
-
-    /* CTA-section instance — fits inside the button row */
-    #btn-info-cta {
-      max-width: 400px;
-    }
-
-    /* Progress bar decoration */
-    .video-progress-bar {
-      max-width: 720px;
-      margin: 20px auto 0;
-      height: 3px;
-      background: rgba(237, 235, 221, 0.1);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .video-progress-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--cherry);
-      border-radius: 2px;
-      transition: width 0.5s linear;
-    }
+    .host p b { color: var(--noir); font-weight: 600; }
 
     /* ============================================================
-       5. CTA SECTION (hidden until video ends)
+       BULLETS + BONUS (compact)
        ============================================================ */
-    #cta-section {
-      background: var(--cotton);
-      padding: 80px 24px;
-      text-align: center;
-    }
+    .learn { padding: 20px 0 0; }
 
-    /* Start hidden, JS fades it in */
-    #cta-section.fade-hidden {
-      display: none;
-    }
-
-    #cta-section.fade-visible {
-      display: block;
-    }
-
-    .cta-inner,
-    #cta-inner {
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    .cta-heading {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
-      font-weight: 700;
-      color: var(--noir);
-      margin-bottom: 20px;
-      line-height: 1.2;
-    }
-
-    .cta-body {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: #4a4646;
-      margin-bottom: 36px;
-    }
-
-    .cta-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      max-width: 400px;
-      padding: 18px 28px;
-      background: var(--cherry);
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 1rem;
+    .learn h2 {
+      font-size: 0.72rem;
       font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-      letter-spacing: 0.01em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
     }
 
-    .btn-primary:hover {
-      background: #6b0000;
-      box-shadow: 0 6px 24px rgba(129, 1, 0, 0.35);
-      transform: translateY(-1px);
+    .learn ul { list-style: none; display: grid; gap: 8px; }
+
+    .learn li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 0.95rem;
     }
 
-    .btn-secondary {
-      display: inline-flex;
+    .learn li::before {
+      content: '';
+      position: absolute;
+      left: 2px; top: 0.6em;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--noir);
+    }
+
+    .bonus {
+      margin: 20px 0 40px;
+      padding: 16px 18px;
+      border-radius: 6px;
+      background: var(--noir);
+      color: var(--cotton);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .bonus-tag {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    /* ============================================================
+       CONFIRMATION — full-screen maroon
+       ============================================================ */
+    .confirm {
+      display: none;
+      min-height: calc(100vh - var(--topbar-h));
+      min-height: calc(100svh - var(--topbar-h));
+      padding: 48px 0;
+      background: var(--maroon);
+      color: var(--cotton);
+      text-align: center;
+    }
+
+    body.is-registered .landing { display: none; }
+    body.is-registered .confirm {
+      display: flex;
+      align-items: center;
+      animation: fadeUp 0.6s var(--ease);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .confirm-check {
+      width: 72px; height: 72px;
+      margin: 0 auto 24px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      max-width: 400px;
-      padding: 16px 28px;
-      background: transparent;
-      color: var(--noir);
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      font-weight: 500;
-      border: 1.5px solid #c5c1b4;
-      border-radius: 8px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: border-color 0.2s ease, background 0.2s ease;
+      border: 1px solid var(--line-light);
+      border-radius: 50%;
+      font-size: 1.9rem;
     }
 
-    .btn-secondary:hover {
-      border-color: var(--noir);
-      background: rgba(27, 23, 23, 0.04);
-    }
-
-    .cta-contact-note {
-      margin-top: 0.5rem;
-      font-size: 0.78rem;
-      color: #888;
-      text-align: center;
-    }
-
-    .cta-footer-note {
-      margin-top: 28px;
-      font-size: 0.78rem;
-      color: #9a9390;
-      letter-spacing: 0.05em;
-    }
-
-    .cta-confirm-main {
+    .confirm h1 {
       font-family: var(--font-display);
-      font-style: italic;
+      font-size: clamp(2.1rem, 9vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.08;
+      margin-bottom: 28px;
+    }
+
+    .confirm h1 em { font-style: italic; font-weight: 400; }
+
+    .confirm .btn-cta {
+      min-height: 66px;
       font-size: 1.1rem;
+      background: var(--cotton);
       color: var(--noir);
-      text-align: center;
-      padding: 1.5rem 0 0.5rem;
+      box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.6);
+    }
+    .confirm .btn-cta:hover { background: #fff; }
+    .confirm .btn-pulse::after { animation-name: pulseLight; }
+
+    @keyframes pulseLight {
+      0%   { box-shadow: 0 0 0 0 rgba(237, 235, 221, 0.5); }
+      60%  { box-shadow: 0 0 0 12px rgba(237, 235, 221, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(237, 235, 221, 0); }
     }
 
-    .cta-confirm-sub {
-      font-size: 0.8rem;
-      color: #888;
-      text-align: center;
-    }
-
-    /* ============================================================
-       6. FOOTER
-       ============================================================ */
-    #footer {
-      background: var(--noir);
-      color: rgba(237, 235, 221, 0.45);
-      text-align: center;
-      padding: 28px 24px;
-      font-size: 0.78rem;
-      letter-spacing: 0.06em;
+    .confirm-small {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line-light);
+      font-size: 0.9rem;
       font-weight: 500;
     }
 
-    /* ============================================================
-       RESPONSIVE — wider screens
-       ============================================================ */
-    @media (min-width: 600px) {
-      .cta-buttons {
-        flex-direction: row;
-        justify-content: center;
-      }
-      .btn-primary,
-      .btn-secondary,
-      .btn-info {
-        width: auto;
-      }
+    @media (min-width: 900px) {
+      .hero { padding-top: 56px; }
+      .hero h1 { text-align: center; }
     }
 
-    @media (min-width: 768px) {
-      #hero {
-        padding: 96px 40px 60px;
-      }
-      .form-card {
-        padding: 48px 48px 44px;
-      }
-      #form-section {
-        margin-top: -120px;
-      }
-      .ticker-item {
-        font-size: 1.25rem;
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
       }
     }
   </style>
@@ -833,246 +452,97 @@
 <body>
 
   <!-- ============================================================
-       1. HERO SECTION
+       1. TOP BAR (fixed) — event info + compact countdown
        ============================================================ -->
-  <section id="hero" aria-labelledby="hero-h1">
+  <div class="topbar" role="note">
+    <span class="topbar-info">Martes 29 sept · 19:00h (Madrid) · Online</span>
+    <span class="topbar-countdown" id="countdown">
+      <span class="cd-running"><span class="cd-label">Empieza en</span><span id="cd-text">00d 00h 00m 00s</span></span>
+      <span class="cd-live">La clase está en directo</span>
+    </span>
+  </div>
 
-    <!-- Decorative background blobs — z-index 0, aria hidden -->
-    <div class="hero-blob" aria-hidden="true" style="width:280px;height:280px;top:-60px;left:-100px;background:#EDEBDD;opacity:0.05;filter:blur(90px);animation:blob-pulse 22s ease-in-out infinite;"></div>
-    <div class="hero-blob" aria-hidden="true" style="width:240px;height:240px;top:10px;right:-80px;background:#810100;opacity:0.06;filter:blur(80px);animation:blob-pulse 18s ease-in-out infinite;animation-delay:-6s;"></div>
-    <div class="hero-blob" aria-hidden="true" style="width:320px;height:320px;bottom:-100px;left:25%;background:#EDEBDD;opacity:0.04;filter:blur(110px);animation:blob-pulse 28s ease-in-out infinite;animation-delay:-12s;"></div>
-    <div class="hero-blob" aria-hidden="true" style="width:180px;height:180px;top:35%;right:8%;background:#810100;opacity:0.05;filter:blur(60px);animation:blob-pulse 15s ease-in-out infinite;animation-delay:-3s;"></div>
+  <main class="landing container">
 
-    <!-- Floating particles — populated by script at bottom of page -->
-    <div id="hero-particles" aria-hidden="true"></div>
+    <!-- ============================================================
+         2. HERO + FORM
+         ============================================================ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">Aprende las formas <em>reales</em> de ganar dinero con redes</h1>
 
-    <div class="hero-inner">
-      <span class="hero-eyebrow">AM AGENCY · Formación Digital 2026</span>
-      <h1 class="hero-h1" id="hero-h1">
-        Marketing digital desde cero.<br />Con estrategia real.
-      </h1>
-      <p class="hero-subtitle">
-        Accede a la clase gratuita y descubre si MADE es para ti.
-      </p>
-    </div>
-  </section>
+      <div class="form-card" id="registro">
+        <p class="form-intro">Rellena tus datos y desbloquea el acceso al grupo privado de la clase</p>
 
-  <!-- ============================================================
-       TOP TICKER — decorative strip between hero and form card.
-       Removed from DOM on form submit; bottom ticker (#modules) stays.
-       ============================================================ -->
-  <section id="ticker-top" aria-hidden="true">
-    <div class="ticker-wrapper">
-      <div class="ticker-track ticker-track--row1">
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-      </div>
-    </div>
-    <div class="ticker-wrapper">
-      <div class="ticker-track ticker-track--row2">
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       2. FLOATING FORM CARD
-       ============================================================ -->
-  <section id="form-section" aria-labelledby="form-heading">
-    <div class="form-card">
-      <h2 class="form-card-heading" id="form-heading">Accede gratis ahora.</h2>
-      <p class="form-card-subtext">Rellena tus datos y empieza en 30 segundos.</p>
-
-      <form id="lead-form" novalidate>
-        <div class="form-group">
-          <input
-            type="text"
-            id="field-nombre"
-            name="nombre"
-            placeholder="Nombre"
-            autocomplete="given-name"
-            required
-          />
-          <input
-            type="email"
-            id="field-email"
-            name="email"
-            placeholder="Email"
-            autocomplete="email"
-            required
-          />
-          <p class="field-error" id="error-email" style="display:none;">Introduce un email válido</p>
-          <div class="phone-wrapper" id="phone-wrapper">
-            <button type="button" class="country-pill" id="country-pill" aria-haspopup="listbox" aria-expanded="false">
-              <span id="selected-flag">🇪🇸</span>
-              <span id="selected-code">+34</span>
-              <span class="pill-chevron">▾</span>
-            </button>
-            <input
-              type="tel"
-              id="field-phone-number"
-              name="phone-number"
-              placeholder="000 000 000"
-              autocomplete="tel-national"
-              inputmode="numeric"
-            />
-            <div class="country-dropdown" id="country-dropdown" role="listbox" style="display:none;">
-              <input
-                type="text"
-                id="country-search"
-                placeholder="Buscar país..."
-                autocomplete="off"
-              />
-              <ul class="country-list" id="country-list"></ul>
-            </div>
-          </div>
-          <p class="field-error" id="error-whatsapp" style="display:none;">Introduce un número de WhatsApp válido (mínimo 5 dígitos)</p>
-          <div>
-            <label class="field-label" for="inp-instagram">Instagram (opcional)</label>
+        <form id="lead-form" novalidate>
+          <div class="form-group">
             <input
               type="text"
-              id="inp-instagram"
-              name="instagram"
-              placeholder="@tuusuario"
-              autocomplete="off"
+              id="field-nombre"
+              name="nombre"
+              placeholder="Nombre"
+              autocomplete="given-name"
+              aria-label="Nombre"
+              required
             />
+            <p class="field-error" id="error-nombre" style="display:none;">Introduce tu nombre</p>
+            <input
+              type="email"
+              id="field-email"
+              name="email"
+              placeholder="Email"
+              autocomplete="email"
+              aria-label="Email"
+              required
+            />
+            <p class="field-error" id="error-email" style="display:none;">Introduce un email válido</p>
           </div>
-        </div>
 
-        <button type="submit" class="btn-submit" id="btn-submit">
-          Ver la clase gratuita →
-        </button>
-
-        <div class="trust-row" aria-label="Garantías">
-          <span class="trust-item">Sin spam</span>
-          <span class="trust-item">Acceso inmediato</span>
-          <span class="trust-item">Gratis</span>
-        </div>
-      </form>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       3. MODULES SECTION — HORIZONTAL TICKER BANNER
-       ============================================================ -->
-  <section id="modules" aria-labelledby="modules-heading">
-
-    <h2 class="modules-heading" id="modules-heading">Lo que aprenderás en MADE</h2>
-
-    <!-- Row 1 — faster (35s) -->
-    <div class="ticker-wrapper" aria-hidden="true">
-      <div class="ticker-track ticker-track--row1">
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
+          <button type="submit" class="btn-cta btn-pulse" id="btn-submit">Desbloquear mi acceso <span class="arrow" aria-hidden="true">→</span></button>
+        </form>
       </div>
-    </div>
+    </section>
 
-    <!-- Row 2 — slower (52s), offset start for depth effect -->
-    <div class="ticker-wrapper" aria-hidden="true">
-      <div class="ticker-track ticker-track--row2">
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
-        <div class="ticker-set">
-          <span class="ticker-item">Mentalidad</span><span class="ticker-sep">·</span><span class="ticker-item">Marketing</span><span class="ticker-sep">·</span><span class="ticker-item">Plataformas</span><span class="ticker-sep">·</span><span class="ticker-item">Herramientas</span><span class="ticker-sep">·</span><span class="ticker-item">Edición</span><span class="ticker-sep">·</span><span class="ticker-item">IA aplicada</span><span class="ticker-sep">·</span><span class="ticker-item">Estrategia de negocio</span><span class="ticker-sep">·</span><span class="ticker-item">Marca personal</span><span class="ticker-sep">·</span>
-        </div>
+    <!-- ============================================================
+         HOST — photo + authority
+         ============================================================ -->
+    <div class="host">
+      <!-- Drop madelene.jpg in the project root; placeholder shows until then -->
+      <div class="host-photo">
+        <img src="madelene.jpg" alt="Madelene" width="144" height="144" loading="lazy" onerror="this.style.display='none'" />
       </div>
+      <p><b>Soy Made</b>, llevo más de 5 años en marketing digital. En esta clase te enseño a elegir la forma de monetizar tus redes que encaja contigo y por dónde empezar.</p>
     </div>
 
-  </section>
+    <!-- ============================================================
+         BULLETS + BONUS (compact)
+         ============================================================ -->
+    <section class="learn" aria-labelledby="learn-label">
+      <h2 id="learn-label">En la clase aprenderás</h2>
+      <ul>
+        <li>Las principales formas de monetizar redes sociales hoy, y de dónde sale el dinero en cada una</li>
+        <li>Qué habilidades necesita cada modelo, y cuál encaja con tu punto de partida</li>
+        <li>Cómo pasar de "quiero ganar dinero con redes" a un camino real y concreto</li>
+      </ul>
+    </section>
+
+    <aside class="bonus">
+      <span class="bonus-tag">Bonus sorpresa</span>
+      Bonus exclusivo solo para quienes estén presentes en la llamada en vivo y formen parte de la comunidad — se revela durante la clase
+    </aside>
+
+  </main>
 
   <!-- ============================================================
-       4. VIDEO SECTION (revealed after form submit)
+       CONFIRMATION — replaces the landing after a successful submit
        ============================================================ -->
-  <section id="video-section" aria-labelledby="video-heading">
-    <h2 class="video-heading" id="video-heading">Tu clase gratuita está lista.</h2>
-    <p class="video-subtext">
-      Mira el vídeo completo — los siguientes pasos se desbloquean al terminar.
-    </p>
-
-    <div class="video-wrapper">
-      <!-- Direct embed — works on file:// and https:// alike -->
-      <iframe
-        id="yt-player"
-        src="https://www.youtube.com/embed/JngUUg487ig?rel=0&modestbranding=1&enablejsapi=1"
-        title="Clase gratuita MADE"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    </div>
-
-    <!-- Decorative progress bar -->
-    <div class="video-progress-bar" aria-hidden="true">
-      <div class="video-progress-fill" id="progress-fill"></div>
-    </div>
-
-    <button id="btn-info-video" type="button" style="display:block;width:100%;max-width:720px;margin:16px auto 0;padding:0.8rem;background:transparent;border:1px solid rgba(237,235,221,0.3);border-radius:8px;color:rgba(237,235,221,0.6);font-family:var(--font-body);font-size:0.82rem;cursor:pointer;">
-      Solicitar más información →
-    </button>
-    <p id="info-video-note" style="display:none;font-size:0.82rem;color:rgba(237,235,221,0.7);text-align:center;margin-top:0.6rem;opacity:0;transition:opacity 0.5s ease;">Nos ponemos en contacto contigo en menos de 24h.</p>
-  </section>
-
-  <!-- ============================================================
-       5. CTA SECTION (revealed after video ends)
-       ============================================================ -->
-  <section id="cta-section" class="fade-hidden" aria-labelledby="cta-heading">
-    <div id="cta-inner">
-      <h2 class="cta-heading" id="cta-heading">¿Esto resuena contigo?</h2>
-      <p class="cta-body">
-        La llamada es gratuita, sin compromiso y dura 30 minutos.
-        En ella sabrás exactamente si MADE encaja con tu momento.
-      </p>
-
-      <a
-        href="https://calendly.com/amagencycrm/llamada-gratuita-made"
-        class="btn-primary"
-        target="_blank"
-        rel="noopener noreferrer"
-        id="btn-calendly"
-      >
-        Agendar mi llamada gratuita →
-      </a>
-
-      <p class="cta-footer-note">Plazas limitadas · Inicio 2026 · AM Agency</p>
+  <section class="confirm" id="confirm" aria-live="polite">
+    <div class="container">
+      <div class="confirm-check" aria-hidden="true">✓</div>
+      <h1>Acceso <em>desbloqueado</em></h1>
+      <a href="https://chat.whatsapp.com/KOYobUM3VGmLntFZXCn08p" class="btn-cta btn-pulse" target="_blank" rel="noopener">Entrar al grupo de WhatsApp</a>
+      <p class="confirm-small">Paso importante: sin el grupo no recibirás el enlace de la clase</p>
     </div>
   </section>
-
-  <!-- ============================================================
-       6. FOOTER
-       ============================================================ -->
-  <footer id="footer" role="contentinfo">
-    MADE · Formación Digital 2026 · AM AGENCY
-  </footer>
-
-  <!-- ============================================================
-       YOUTUBE IFRAME API
-       ============================================================ -->
-  <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
     /* ============================================================
@@ -1081,372 +551,19 @@
     var SUPABASE_URL = 'https://zggckdkddbwbkauttvjg.supabase.co';
     var SUPABASE_KEY = 'sb_publishable_SoY16PJjYYL-VDmbjIslug_qMa28aB9';
     var SUPABASE_TABLE = 'leads';
-
-    /* ============================================================
-       YOUTUBE CONFIG
-       Video ID: JngUUg487ig
-       ============================================================ */
-    var YT_VIDEO_ID = 'JngUUg487ig';
+    var CAMPANA = 'clase_29_sept';
 
     /* ============================================================
        DOM REFS
        ============================================================ */
-    var leadForm       = document.getElementById('lead-form');
-    var btnSubmit      = document.getElementById('btn-submit');
-    var formSection    = document.getElementById('form-section');
-    var videoSection   = document.getElementById('video-section');
-    var ctaSection     = document.getElementById('cta-section');
-    var progressFill   = document.getElementById('progress-fill');
-
-    var ytPlayer       = null;
-    var progressTimer  = null;
-    var videoDuration  = 0;
-    var ctaShown       = false;
-    var leadEmail = '';
-
-    /* ============================================================
-       COUNTRY PICKER — data + logic
-       ============================================================ */
-    var selectedCountry = { f: '🇪🇸', n: 'España', c: '+34' };
-
-    var COUNTRIES = [
-      {f:'🇦🇫',n:'Afganistán',c:'+93'},
-      {f:'🇦🇱',n:'Albania',c:'+355'},
-      {f:'🇩🇿',n:'Argelia',c:'+213'},
-      {f:'🇦🇩',n:'Andorra',c:'+376'},
-      {f:'🇦🇴',n:'Angola',c:'+244'},
-      {f:'🇦🇮',n:'Anguila',c:'+1264'},
-      {f:'🇦🇬',n:'Antigua y Barbuda',c:'+1268'},
-      {f:'🇸🇦',n:'Arabia Saudita',c:'+966'},
-      {f:'🇦🇷',n:'Argentina',c:'+54'},
-      {f:'🇦🇲',n:'Armenia',c:'+374'},
-      {f:'🇦🇼',n:'Aruba',c:'+297'},
-      {f:'🇦🇺',n:'Australia',c:'+61'},
-      {f:'🇦🇹',n:'Austria',c:'+43'},
-      {f:'🇦🇿',n:'Azerbaiyán',c:'+994'},
-      {f:'🇧🇸',n:'Bahamas',c:'+1242'},
-      {f:'🇧🇭',n:'Baréin',c:'+973'},
-      {f:'🇧🇩',n:'Bangladés',c:'+880'},
-      {f:'🇧🇧',n:'Barbados',c:'+1246'},
-      {f:'🇧🇾',n:'Bielorrusia',c:'+375'},
-      {f:'🇧🇪',n:'Bélgica',c:'+32'},
-      {f:'🇧🇿',n:'Belice',c:'+501'},
-      {f:'🇧🇯',n:'Benín',c:'+229'},
-      {f:'🇧🇲',n:'Bermudas',c:'+1441'},
-      {f:'🇧🇹',n:'Bután',c:'+975'},
-      {f:'🇧🇴',n:'Bolivia',c:'+591'},
-      {f:'🇧🇦',n:'Bosnia y Herzegovina',c:'+387'},
-      {f:'🇧🇼',n:'Botsuana',c:'+267'},
-      {f:'🇧🇷',n:'Brasil',c:'+55'},
-      {f:'🇧🇳',n:'Brunéi',c:'+673'},
-      {f:'🇧🇬',n:'Bulgaria',c:'+359'},
-      {f:'🇧🇫',n:'Burkina Faso',c:'+226'},
-      {f:'🇧🇮',n:'Burundi',c:'+257'},
-      {f:'🇨🇻',n:'Cabo Verde',c:'+238'},
-      {f:'🇰🇭',n:'Camboya',c:'+855'},
-      {f:'🇨🇲',n:'Camerún',c:'+237'},
-      {f:'🇨🇦',n:'Canadá',c:'+1'},
-      {f:'🇶🇦',n:'Catar',c:'+974'},
-      {f:'🇹🇩',n:'Chad',c:'+235'},
-      {f:'🇨🇱',n:'Chile',c:'+56'},
-      {f:'🇨🇳',n:'China',c:'+86'},
-      {f:'🇨🇾',n:'Chipre',c:'+357'},
-      {f:'🇨🇴',n:'Colombia',c:'+57'},
-      {f:'🇰🇲',n:'Comoras',c:'+269'},
-      {f:'🇨🇬',n:'Congo',c:'+242'},
-      {f:'🇨🇩',n:'Congo (Rep. Dem.)',c:'+243'},
-      {f:'🇨🇰',n:'Islas Cook',c:'+682'},
-      {f:'🇰🇵',n:'Corea del Norte',c:'+850'},
-      {f:'🇰🇷',n:'Corea del Sur',c:'+82'},
-      {f:'🇨🇮',n:'Costa de Marfil',c:'+225'},
-      {f:'🇨🇷',n:'Costa Rica',c:'+506'},
-      {f:'🇭🇷',n:'Croacia',c:'+385'},
-      {f:'🇨🇺',n:'Cuba',c:'+53'},
-      {f:'🇨🇼',n:'Curazao',c:'+599'},
-      {f:'🇩🇰',n:'Dinamarca',c:'+45'},
-      {f:'🇩🇯',n:'Yibuti',c:'+253'},
-      {f:'🇩🇲',n:'Dominica',c:'+1767'},
-      {f:'🇪🇨',n:'Ecuador',c:'+593'},
-      {f:'🇪🇬',n:'Egipto',c:'+20'},
-      {f:'🇸🇻',n:'El Salvador',c:'+503'},
-      {f:'🇦🇪',n:'Emiratos Árabes Unidos',c:'+971'},
-      {f:'🇪🇷',n:'Eritrea',c:'+291'},
-      {f:'🇸🇰',n:'Eslovaquia',c:'+421'},
-      {f:'🇸🇮',n:'Eslovenia',c:'+386'},
-      {f:'🇪🇸',n:'España',c:'+34'},
-      {f:'🇺🇸',n:'Estados Unidos',c:'+1'},
-      {f:'🇪🇪',n:'Estonia',c:'+372'},
-      {f:'🇸🇿',n:'Esuatini',c:'+268'},
-      {f:'🇪🇹',n:'Etiopía',c:'+251'},
-      {f:'🇵🇭',n:'Filipinas',c:'+63'},
-      {f:'🇫🇮',n:'Finlandia',c:'+358'},
-      {f:'🇫🇯',n:'Fiyi',c:'+679'},
-      {f:'🇫🇷',n:'Francia',c:'+33'},
-      {f:'🇬🇦',n:'Gabón',c:'+241'},
-      {f:'🇬🇲',n:'Gambia',c:'+220'},
-      {f:'🇬🇪',n:'Georgia',c:'+995'},
-      {f:'🇩🇪',n:'Alemania',c:'+49'},
-      {f:'🇬🇭',n:'Ghana',c:'+233'},
-      {f:'🇬🇮',n:'Gibraltar',c:'+350'},
-      {f:'🇬🇩',n:'Granada',c:'+1473'},
-      {f:'🇬🇷',n:'Grecia',c:'+30'},
-      {f:'🇬🇱',n:'Groenlandia',c:'+299'},
-      {f:'🇬🇵',n:'Guadalupe',c:'+590'},
-      {f:'🇬🇺',n:'Guam',c:'+1671'},
-      {f:'🇬🇹',n:'Guatemala',c:'+502'},
-      {f:'🇬🇫',n:'Guayana Francesa',c:'+594'},
-      {f:'🇬🇬',n:'Guernsey',c:'+44'},
-      {f:'🇬🇳',n:'Guinea',c:'+224'},
-      {f:'🇬🇼',n:'Guinea-Bisáu',c:'+245'},
-      {f:'🇬🇶',n:'Guinea Ecuatorial',c:'+240'},
-      {f:'🇬🇾',n:'Guyana',c:'+592'},
-      {f:'🇭🇹',n:'Haití',c:'+509'},
-      {f:'🇭🇳',n:'Honduras',c:'+504'},
-      {f:'🇭🇰',n:'Hong Kong',c:'+852'},
-      {f:'🇭🇺',n:'Hungría',c:'+36'},
-      {f:'🇮🇳',n:'India',c:'+91'},
-      {f:'🇮🇩',n:'Indonesia',c:'+62'},
-      {f:'🇮🇶',n:'Irak',c:'+964'},
-      {f:'🇮🇷',n:'Irán',c:'+98'},
-      {f:'🇮🇪',n:'Irlanda',c:'+353'},
-      {f:'🇨🇽',n:'Isla de Navidad',c:'+61'},
-      {f:'🇳🇫',n:'Isla Norfolk',c:'+672'},
-      {f:'🇮🇸',n:'Islandia',c:'+354'},
-      {f:'🇰🇾',n:'Islas Caimán',c:'+1345'},
-      {f:'🇨🇨',n:'Islas Cocos',c:'+61'},
-      {f:'🇫🇴',n:'Islas Feroe',c:'+298'},
-      {f:'🇫🇰',n:'Islas Malvinas',c:'+500'},
-      {f:'🇲🇵',n:'Islas Marianas del Norte',c:'+1670'},
-      {f:'🇲🇭',n:'Islas Marshall',c:'+692'},
-      {f:'🇸🇧',n:'Islas Salomón',c:'+677'},
-      {f:'🇹🇨',n:'Islas Turcas y Caicos',c:'+1649'},
-      {f:'🇻🇬',n:'Islas Vírgenes Británicas',c:'+1284'},
-      {f:'🇻🇮',n:'Islas Vírgenes EE.UU.',c:'+1340'},
-      {f:'🇮🇱',n:'Israel',c:'+972'},
-      {f:'🇮🇹',n:'Italia',c:'+39'},
-      {f:'🇯🇲',n:'Jamaica',c:'+1876'},
-      {f:'🇯🇵',n:'Japón',c:'+81'},
-      {f:'🇯🇪',n:'Jersey',c:'+44'},
-      {f:'🇯🇴',n:'Jordania',c:'+962'},
-      {f:'🇰🇿',n:'Kazajistán',c:'+7'},
-      {f:'🇰🇪',n:'Kenia',c:'+254'},
-      {f:'🇰🇬',n:'Kirguistán',c:'+996'},
-      {f:'🇰🇮',n:'Kiribati',c:'+686'},
-      {f:'🇽🇰',n:'Kosovo',c:'+383'},
-      {f:'🇰🇼',n:'Kuwait',c:'+965'},
-      {f:'🇱🇦',n:'Laos',c:'+856'},
-      {f:'🇱🇸',n:'Lesoto',c:'+266'},
-      {f:'🇱🇻',n:'Letonia',c:'+371'},
-      {f:'🇱🇧',n:'Líbano',c:'+961'},
-      {f:'🇱🇷',n:'Liberia',c:'+231'},
-      {f:'🇱🇾',n:'Libia',c:'+218'},
-      {f:'🇱🇮',n:'Liechtenstein',c:'+423'},
-      {f:'🇱🇹',n:'Lituania',c:'+370'},
-      {f:'🇱🇺',n:'Luxemburgo',c:'+352'},
-      {f:'🇲🇴',n:'Macao',c:'+853'},
-      {f:'🇲🇰',n:'Macedonia del Norte',c:'+389'},
-      {f:'🇲🇬',n:'Madagascar',c:'+261'},
-      {f:'🇲🇾',n:'Malasia',c:'+60'},
-      {f:'🇲🇼',n:'Malaui',c:'+265'},
-      {f:'🇲🇻',n:'Maldivas',c:'+960'},
-      {f:'🇲🇱',n:'Mali',c:'+223'},
-      {f:'🇲🇹',n:'Malta',c:'+356'},
-      {f:'🇲🇦',n:'Marruecos',c:'+212'},
-      {f:'🇲🇶',n:'Martinica',c:'+596'},
-      {f:'🇲🇷',n:'Mauritania',c:'+222'},
-      {f:'🇲🇺',n:'Mauricio',c:'+230'},
-      {f:'🇾🇹',n:'Mayotte',c:'+262'},
-      {f:'🇲🇽',n:'México',c:'+52'},
-      {f:'🇫🇲',n:'Micronesia',c:'+691'},
-      {f:'🇲🇩',n:'Moldavia',c:'+373'},
-      {f:'🇲🇨',n:'Mónaco',c:'+377'},
-      {f:'🇲🇳',n:'Mongolia',c:'+976'},
-      {f:'🇲🇪',n:'Montenegro',c:'+382'},
-      {f:'🇲🇸',n:'Montserrat',c:'+1664'},
-      {f:'🇲🇿',n:'Mozambique',c:'+258'},
-      {f:'🇲🇲',n:'Myanmar',c:'+95'},
-      {f:'🇳🇦',n:'Namibia',c:'+264'},
-      {f:'🇳🇷',n:'Nauru',c:'+674'},
-      {f:'🇳🇵',n:'Nepal',c:'+977'},
-      {f:'🇳🇱',n:'Países Bajos',c:'+31'},
-      {f:'🇳🇮',n:'Nicaragua',c:'+505'},
-      {f:'🇳🇪',n:'Níger',c:'+227'},
-      {f:'🇳🇬',n:'Nigeria',c:'+234'},
-      {f:'🇳🇺',n:'Niue',c:'+683'},
-      {f:'🇳🇴',n:'Noruega',c:'+47'},
-      {f:'🇳🇨',n:'Nueva Caledonia',c:'+687'},
-      {f:'🇳🇿',n:'Nueva Zelanda',c:'+64'},
-      {f:'🇴🇲',n:'Omán',c:'+968'},
-      {f:'🇵🇰',n:'Pakistán',c:'+92'},
-      {f:'🇵🇼',n:'Palaos',c:'+680'},
-      {f:'🇵🇸',n:'Palestina',c:'+970'},
-      {f:'🇵🇦',n:'Panamá',c:'+507'},
-      {f:'🇵🇬',n:'Papúa Nueva Guinea',c:'+675'},
-      {f:'🇵🇾',n:'Paraguay',c:'+595'},
-      {f:'🇵🇪',n:'Perú',c:'+51'},
-      {f:'🇵🇫',n:'Polinesia Francesa',c:'+689'},
-      {f:'🇵🇱',n:'Polonia',c:'+48'},
-      {f:'🇵🇹',n:'Portugal',c:'+351'},
-      {f:'🇵🇷',n:'Puerto Rico',c:'+1787'},
-      {f:'🇬🇧',n:'Reino Unido',c:'+44'},
-      {f:'🇨🇫',n:'República Centroafricana',c:'+236'},
-      {f:'🇨🇿',n:'República Checa',c:'+420'},
-      {f:'🇩🇴',n:'República Dominicana',c:'+1809'},
-      {f:'🇷🇪',n:'Reunión',c:'+262'},
-      {f:'🇷🇼',n:'Ruanda',c:'+250'},
-      {f:'🇷🇴',n:'Rumanía',c:'+40'},
-      {f:'🇷🇺',n:'Rusia',c:'+7'},
-      {f:'🇼🇸',n:'Samoa',c:'+685'},
-      {f:'🇦🇸',n:'Samoa Americana',c:'+1684'},
-      {f:'🇰🇳',n:'San Cristóbal y Nieves',c:'+1869'},
-      {f:'🇸🇲',n:'San Marino',c:'+378'},
-      {f:'🇵🇲',n:'San Pedro y Miquelón',c:'+508'},
-      {f:'🇻🇨',n:'San Vicente y las Granadinas',c:'+1784'},
-      {f:'🇸🇭',n:'Santa Elena',c:'+290'},
-      {f:'🇱🇨',n:'Santa Lucía',c:'+1758'},
-      {f:'🇸🇹',n:'Santo Tomé y Príncipe',c:'+239'},
-      {f:'🇸🇳',n:'Senegal',c:'+221'},
-      {f:'🇷🇸',n:'Serbia',c:'+381'},
-      {f:'🇸🇨',n:'Seychelles',c:'+248'},
-      {f:'🇸🇱',n:'Sierra Leona',c:'+232'},
-      {f:'🇸🇬',n:'Singapur',c:'+65'},
-      {f:'🇸🇽',n:'Sint Maarten',c:'+1721'},
-      {f:'🇸🇾',n:'Siria',c:'+963'},
-      {f:'🇸🇴',n:'Somalia',c:'+252'},
-      {f:'🇱🇰',n:'Sri Lanka',c:'+94'},
-      {f:'🇿🇦',n:'Sudáfrica',c:'+27'},
-      {f:'🇸🇩',n:'Sudán',c:'+249'},
-      {f:'🇸🇸',n:'Sudán del Sur',c:'+211'},
-      {f:'🇸🇪',n:'Suecia',c:'+46'},
-      {f:'🇨🇭',n:'Suiza',c:'+41'},
-      {f:'🇸🇷',n:'Surinam',c:'+597'},
-      {f:'🇹🇭',n:'Tailandia',c:'+66'},
-      {f:'🇹🇼',n:'Taiwán',c:'+886'},
-      {f:'🇹🇿',n:'Tanzania',c:'+255'},
-      {f:'🇹🇯',n:'Tayikistán',c:'+992'},
-      {f:'🇹🇱',n:'Timor-Leste',c:'+670'},
-      {f:'🇹🇬',n:'Togo',c:'+228'},
-      {f:'🇹🇰',n:'Tokelau',c:'+690'},
-      {f:'🇹🇴',n:'Tonga',c:'+676'},
-      {f:'🇹🇹',n:'Trinidad y Tobago',c:'+1868'},
-      {f:'🇹🇳',n:'Túnez',c:'+216'},
-      {f:'🇹🇲',n:'Turkmenistán',c:'+993'},
-      {f:'🇹🇷',n:'Turquía',c:'+90'},
-      {f:'🇹🇻',n:'Tuvalu',c:'+688'},
-      {f:'🇺🇦',n:'Ucrania',c:'+380'},
-      {f:'🇺🇬',n:'Uganda',c:'+256'},
-      {f:'🇺🇾',n:'Uruguay',c:'+598'},
-      {f:'🇺🇿',n:'Uzbekistán',c:'+998'},
-      {f:'🇻🇺',n:'Vanuatu',c:'+678'},
-      {f:'🇻🇦',n:'Vaticano',c:'+379'},
-      {f:'🇻🇪',n:'Venezuela',c:'+58'},
-      {f:'🇻🇳',n:'Vietnam',c:'+84'},
-      {f:'🇼🇫',n:'Wallis y Futuna',c:'+681'},
-      {f:'🇾🇪',n:'Yemen',c:'+967'},
-      {f:'🇿🇲',n:'Zambia',c:'+260'},
-      {f:'🇿🇼',n:'Zimbabue',c:'+263'}
-    ];
-
-    function renderCountryList(filter) {
-      var list = document.getElementById('country-list');
-      if (!list) return;
-      var q = (filter || '').toLowerCase().trim();
-      var filtered = q
-        ? COUNTRIES.filter(function(co) {
-            return co.n.toLowerCase().indexOf(q) !== -1 || co.c.indexOf(q) !== -1;
-          })
-        : COUNTRIES;
-      list.innerHTML = '';
-      if (filtered.length === 0) {
-        var li = document.createElement('li');
-        li.className = 'country-no-results';
-        li.textContent = 'Sin resultados';
-        list.appendChild(li);
-        return;
-      }
-      filtered.forEach(function(co) {
-        var li = document.createElement('li');
-        li.className = 'country-option' + (co.n === selectedCountry.n ? ' is-active' : '');
-        li.setAttribute('role', 'option');
-        li.innerHTML = '<span>' + co.f + '</span>'
-                     + '<span class="opt-name">' + co.n + '</span>'
-                     + '<span class="opt-code">' + co.c + '</span>';
-        li.addEventListener('click', function() { selectCountry(co); });
-        list.appendChild(li);
-      });
-    }
-
-    function selectCountry(co) {
-      selectedCountry = co;
-      var flagEl = document.getElementById('selected-flag');
-      var codeEl = document.getElementById('selected-code');
-      if (flagEl) flagEl.textContent = co.f;
-      if (codeEl) codeEl.textContent = co.c;
-      closeCountryDropdown();
-      var phoneInput = document.getElementById('field-phone-number');
-      if (phoneInput) phoneInput.focus();
-    }
-
-    function openCountryDropdown() {
-      var dropdown = document.getElementById('country-dropdown');
-      var pill     = document.getElementById('country-pill');
-      if (!dropdown) return;
-      dropdown.style.display = 'block';
-      if (pill) pill.setAttribute('aria-expanded', 'true');
-      renderCountryList('');
-      setTimeout(function() {
-        var search = document.getElementById('country-search');
-        if (search) { search.value = ''; search.focus(); }
-        var active = document.querySelector('.country-option.is-active');
-        if (active) active.scrollIntoView({ block: 'nearest' });
-      }, 0);
-    }
-
-    function closeCountryDropdown() {
-      var dropdown = document.getElementById('country-dropdown');
-      var pill     = document.getElementById('country-pill');
-      if (dropdown) dropdown.style.display = 'none';
-      if (pill) pill.setAttribute('aria-expanded', 'false');
-    }
-
-    var countryPill = document.getElementById('country-pill');
-    if (countryPill) {
-      countryPill.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var dropdown = document.getElementById('country-dropdown');
-        if (dropdown && dropdown.style.display === 'none') {
-          openCountryDropdown();
-        } else {
-          closeCountryDropdown();
-        }
-      });
-    }
-
-    var countrySearchEl = document.getElementById('country-search');
-    if (countrySearchEl) {
-      countrySearchEl.addEventListener('input', function() {
-        renderCountryList(this.value);
-      });
-      countrySearchEl.addEventListener('click', function(e) {
-        e.stopPropagation();
-      });
-      countrySearchEl.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeCountryDropdown();
-      });
-    }
-
-    document.addEventListener('click', function(e) {
-      var wrapper = document.getElementById('phone-wrapper');
-      if (wrapper && !wrapper.contains(e.target)) {
-        closeCountryDropdown();
-      }
-    });
+    var leadForm  = document.getElementById('lead-form');
+    var btnSubmit = document.getElementById('btn-submit');
 
     /* ============================================================
        SUPABASE LEAD SAVE
        POST to Supabase REST API (fails silently to not block UX)
        ============================================================ */
-    function saveLead(nombre, email, whatsapp, instagram) {
+    function saveLead(nombre, email, whatsapp) {
       var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE;
       return fetch(url, {
         method: 'POST',
@@ -1456,186 +573,15 @@
           'Authorization': 'Bearer ' + SUPABASE_KEY,
           'Prefer':        'return=minimal'
         },
-        body: JSON.stringify({ nombre: nombre, email: email, whatsapp: whatsapp, instagram: instagram || null })
+        body: JSON.stringify({ nombre: nombre, email: email, whatsapp: whatsapp, campana: CAMPANA })
       });
     }
 
-    /* ============================================================
-       FORM SUBMIT
-       ============================================================ */
-    leadForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      var nombre   = document.getElementById('field-nombre').value.trim();
-      var email    = document.getElementById('field-email').value.trim();
-      var phoneRaw = document.getElementById('field-phone-number').value.replace(/\D/g, '');
-
-      var errorEmail    = document.getElementById('error-email');
-      var errorWhatsapp = document.getElementById('error-whatsapp');
-      errorEmail.style.display    = 'none';
-      errorEmail.textContent      = 'Introduce un email válido';
-      errorWhatsapp.style.display = 'none';
-
-      var valid = true;
-
-      if (!nombre) {
-        document.getElementById('field-nombre').focus();
-        return;
-      }
-
-      var emailRe = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-      if (!email || !emailRe.test(email)) {
-        errorEmail.style.display = 'block';
-        document.getElementById('field-email').focus();
-        valid = false;
-      }
-
-      var whatsapp = '';
-      if (phoneRaw) {
-        if (phoneRaw.length < 5) {
-          errorWhatsapp.style.display = 'block';
-          if (valid) document.getElementById('field-phone-number').focus();
-          valid = false;
-        } else {
-          whatsapp = selectedCountry.c + phoneRaw;
-        }
-      }
-
-      if (!valid) return;
-
-      btnSubmit.disabled = true;
-      btnSubmit.textContent = 'Enviando…';
-
-      leadEmail = email;
-
-      function proceedToVideo() {
-        var tickerTop = document.getElementById('ticker-top');
-        if (tickerTop) tickerTop.parentNode.removeChild(tickerTop);
-        if (formSection && formSection.parentNode) formSection.parentNode.removeChild(formSection);
-        videoSection.classList.add('is-visible');
-        setTimeout(function() {
-          videoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 80);
-      }
-
-      var instagram = document.getElementById('inp-instagram').value.trim();
-
-      saveLead(nombre, email, whatsapp, instagram)
-        .then(function(res) {
-          if (!res.ok) {
-            return res.json().then(function(body) {
-              if (body && body.code === '23505') {
-                errorEmail.textContent   = 'Ya estás registrada. Revisa tu email para acceder al contenido.';
-                errorEmail.style.display = 'block';
-                setTimeout(proceedToVideo, 2000);
-              } else {
-                proceedToVideo();
-              }
-            }).catch(proceedToVideo);
-          } else {
-            if (typeof window !== 'undefined' && window.fbq) {
-              window.fbq('track', 'Lead');
-            }
-            proceedToVideo();
-          }
-        })
-        .catch(function(err) {
-          console.error('[MADE] Supabase error (non-blocking):', err);
-          proceedToVideo();
-        });
-    });
-
-    /* ============================================================
-       YOUTUBE IFRAME API
-       Wraps the already-embedded iframe for end-of-video detection.
-       Degrades gracefully if postMessage is blocked (file:// origin).
-       ============================================================ */
-
-    window.onYouTubeIframeAPIReady = function() {
-      ytPlayer = new YT.Player('yt-player', {
-        events: {
-          onReady:       onPlayerReady,
-          onStateChange: onPlayerStateChange
-        }
-      });
-    };
-
-    function onPlayerReady() {
-      setTimeout(function() {
-        if (ytPlayer && typeof ytPlayer.getDuration === 'function') {
-          videoDuration = ytPlayer.getDuration();
-        }
-      }, 500);
-    }
-
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.PLAYING) {
-        if (!videoDuration && ytPlayer) {
-          videoDuration = ytPlayer.getDuration();
-        }
-        startProgressBar();
-      }
-
-      if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.BUFFERING) {
-        stopProgressBar();
-      }
-
-      if (event.data === YT.PlayerState.ENDED) {
-        stopProgressBar();
-        progressFill.style.width = '100%';
-        showCTASection();
-      }
-    }
-
-
-    /* Below-video "Solicitar más información" — Supabase PATCH only, no scroll/reveal */
-    var btnInfoVideo = document.getElementById('btn-info-video');
-    if (btnInfoVideo) {
-      btnInfoVideo.addEventListener('click', function() {
-        btnInfoVideo.disabled = true;
-        btnInfoVideo.textContent = '✓ Información solicitada';
-        btnInfoVideo.style.background  = '#810100';
-        btnInfoVideo.style.borderColor = '#810100';
-        btnInfoVideo.style.color       = '#EDEBDD';
-        btnInfoVideo.classList.add('confirmed');
-        var note = document.getElementById('info-video-note');
-        if (note) {
-          note.style.display = 'block';
-          setTimeout(function() { note.style.opacity = '1'; }, 20);
-        }
-        if (leadEmail) {
-          var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
-                  + '?email=eq.' + encodeURIComponent(leadEmail);
-          fetch(url, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey':        SUPABASE_KEY,
-              'Authorization': 'Bearer ' + SUPABASE_KEY,
-              'Prefer':        'return=minimal'
-            },
-            body: JSON.stringify({
-              solicito_info:    true,
-              solicito_info_at: new Date().toISOString()
-            })
-          }).catch(function(err) {
-            console.error('[MADE] Supabase solicitar info error (non-blocking):', err);
-          });
-        }
-      });
-    }
-
-    /* ============================================================
-       CALENDLY CLICK TRACKING — PATCH cta_clicked on booking intent
-       SQL: ALTER TABLE leads
-              ADD COLUMN IF NOT EXISTS cta_clicked text,
-              ADD COLUMN IF NOT EXISTS cta_clicked_at timestamptz;
-       ============================================================ */
-    function trackCTAClick(label) {
-      if (!leadEmail) return;
+    /* Existing lead (email unique) — tag it with this campaign via PATCH */
+    function tagExistingLead(email) {
       var url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE
-              + '?email=eq.' + encodeURIComponent(leadEmail);
-      fetch(url, {
+              + '?email=eq.' + encodeURIComponent(email);
+      return fetch(url, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -1643,89 +589,102 @@
           'Authorization': 'Bearer ' + SUPABASE_KEY,
           'Prefer':        'return=minimal'
         },
-        body: JSON.stringify({
-          cta_clicked:    label,
-          cta_clicked_at: new Date().toISOString()
-        })
+        body: JSON.stringify({ campana: CAMPANA })
       }).catch(function(err) {
-        console.error('[MADE] Supabase CTA track error (non-blocking):', err);
-      });
-    }
-
-    var btnCalendly = document.getElementById('btn-calendly');
-    if (btnCalendly) {
-      btnCalendly.addEventListener('click', function() {
-        trackCTAClick('Agendar mi llamada gratuita');
+        console.error('[MADE] Supabase campana PATCH error (non-blocking):', err);
       });
     }
 
 
     /* ============================================================
-       PROGRESS BAR
+       FORM SUBMIT — nombre + email only (whatsapp sent empty)
        ============================================================ */
-    function startProgressBar() {
-      if (progressTimer) return; // already running
-      progressTimer = setInterval(function() {
-        if (!ytPlayer || !videoDuration) return;
-        var current  = ytPlayer.getCurrentTime() || 0;
-        var pct      = Math.min((current / videoDuration) * 100, 100);
-        progressFill.style.width = pct + '%';
-      }, 500);
+    function showConfirmation() {
+      document.body.classList.add('is-registered');
+      window.scrollTo(0, 0);
     }
 
-    function stopProgressBar() {
-      clearInterval(progressTimer);
-      progressTimer = null;
-    }
+    leadForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var nombre = document.getElementById('field-nombre').value.trim();
+      var email  = document.getElementById('field-email').value.trim();
+
+      var errorNombre = document.getElementById('error-nombre');
+      var errorEmail  = document.getElementById('error-email');
+      errorNombre.style.display = 'none';
+      errorEmail.style.display  = 'none';
+
+      var firstInvalid = null;
+
+      if (!nombre) {
+        errorNombre.style.display = 'block';
+        firstInvalid = document.getElementById('field-nombre');
+      }
+
+      var emailRe = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+      if (!email || !emailRe.test(email)) {
+        errorEmail.style.display = 'block';
+        firstInvalid = firstInvalid || document.getElementById('field-email');
+      }
+
+      if (firstInvalid) {
+        firstInvalid.focus();
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Enviando…';
+
+      saveLead(nombre, email, '')
+        .then(function(res) {
+          if (!res.ok) {
+            return res.json().then(function(body) {
+              if (body && body.code === '23505') {
+                return tagExistingLead(email).then(showConfirmation);
+              }
+              showConfirmation();
+            }).catch(showConfirmation);
+          } else {
+            if (typeof window !== 'undefined' && window.fbq) {
+              window.fbq('track', 'Lead');
+            }
+            showConfirmation();
+          }
+        })
+        .catch(function(err) {
+          console.error('[MADE] Supabase error (non-blocking):', err);
+          showConfirmation();
+        });
+    });
 
     /* ============================================================
-       REVEAL CTA SECTION
+       COUNTDOWN — Tue 29 Sep 2026 19:00 Europe/Madrid (CEST, UTC+2)
        ============================================================ */
-    function showCTASection() {
-      if (ctaShown) return;
-      ctaShown = true;
+    (function() {
+      var TARGET = Date.parse('2026-09-29T19:00:00+02:00');
+      var box  = document.getElementById('countdown');
+      var text = document.getElementById('cd-text');
+      var timer = null;
 
-      // Fire Meta Pixel ViewContent event
-      if (typeof fbq === 'function') {
-        fbq('track', 'ViewContent');
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+      function tick() {
+        var diff = Math.floor((TARGET - Date.now()) / 1000);
+        if (diff <= 0) {
+          box.classList.add('is-live');
+          clearInterval(timer);
+          return;
+        }
+        text.textContent =
+          pad(Math.floor(diff / 86400)) + 'd ' +
+          pad(Math.floor(diff % 86400 / 3600)) + 'h ' +
+          pad(Math.floor(diff % 3600 / 60)) + 'm ' +
+          pad(diff % 60) + 's';
       }
 
-      document.getElementById('cta-section').style.display = 'block';
-      ctaSection.classList.remove('fade-hidden');
-      ctaSection.classList.add('fade-visible');
-
-      setTimeout(function() {
-        ctaSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-  </script>
-
-  <!-- ============================================================
-       FLOATING PARTICLES — generate DOM nodes, CSS does all animation
-       ============================================================ -->
-  <script>
-    (function () {
-      var container = document.getElementById('hero-particles');
-      if (!container) return;
-      for (var i = 0; i < 22; i++) {
-        var p     = document.createElement('div');
-        p.className = 'particle';
-        var size  = (2 + Math.random() * 2).toFixed(1);
-        var left  = (Math.random() * 96).toFixed(1);
-        var top   = (5 + Math.random() * 85).toFixed(1);
-        var dur   = (7 + Math.random() * 9).toFixed(1);
-        var delay = (-Math.random() * 16).toFixed(1);
-        var drift = ((Math.random() - 0.5) * 80).toFixed(1);
-        p.style.cssText =
-          'width:'   + size  + 'px;' +
-          'height:'  + size  + 'px;' +
-          'left:'    + left  + '%;'  +
-          'top:'     + top   + '%;'  +
-          '--dur:'   + dur   + 's;'  +
-          '--delay:' + delay + 's;'  +
-          '--drift:' + drift + 'px';
-        container.appendChild(p);
-      }
+      tick();
+      timer = setInterval(tick, 1000);
     }());
   </script>
 
