@@ -169,7 +169,15 @@
 
     .hero-note { margin-top: 12px; font-size: 0.82rem; color: var(--muted); text-align: center; }
 
-    .hero-photo { display: none; }
+    .hero-photo {
+      margin-top: 22px;
+      aspect-ratio: 5 / 4;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      background: linear-gradient(160deg, #d9d5c3 0%, #c9c4b0 100%);
+    }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
 
     /* Cifras */
     .stats {
@@ -188,24 +196,8 @@
     /* ============================================================
        HOST — photo + authority line
        ============================================================ */
-    .host {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .host-photo {
-      position: relative;
-      flex-shrink: 0;
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      overflow: hidden;
-      background: linear-gradient(160deg, #d9d5c3 0%, #c9c4b0 100%);
-    }
-    .host-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
-    .host p { font-size: 0.86rem; line-height: 1.45; color: var(--muted); }
+    .host { padding: 20px 0 0; }
+    .host p { font-size: 0.9rem; line-height: 1.5; color: var(--muted); }
     .host p b { color: var(--noir); font-weight: 600; }
 
     /* ============================================================
@@ -240,7 +232,7 @@
        ============================================================ */
     .case { display: grid; gap: 10px; }
 
-    .case-card { padding: 20px; border-radius: 6px; background: #fff; box-shadow: var(--card-shadow); }
+    .case-card { padding: 20px; border-radius: 6px; background: #fff; color: var(--noir); box-shadow: var(--card-shadow); }
 
     .case-tag {
       display: inline-block;
@@ -273,37 +265,176 @@
 
     .sub-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin: 30px 0 12px; }
 
-    .voices { display: grid; gap: 10px; }
-    .voices img { width: 100%; height: auto; border-radius: 12px; box-shadow: var(--card-shadow); }
+    /* Carrusel de capturas */
+    .voices {
+      display: flex;
+      gap: 10px;
+      margin: 0 -20px;
+      padding: 4px 20px 8px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-left: 20px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .voices::-webkit-scrollbar { display: none; }
+    .voice-card {
+      flex: 0 0 78%;
+      max-width: 300px;
+      height: 230px;
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid var(--line-light);
+      background: #0f1115;
+      overflow: hidden;
+      scroll-snap-align: start;
+      cursor: zoom-in;
+      transition: transform 0.25s var(--ease), border-color 0.25s ease;
+    }
+    .voice-card:hover { transform: translateY(-3px); border-color: rgba(237, 235, 221, 0.5); }
+    .voice-card img { width: auto; height: auto; max-width: 100%; max-height: 212px; border-radius: 6px; }
+
+    .voices-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; font-size: 0.8rem; opacity: 0.7; }
+    .voices-nav { display: none; gap: 8px; }
+    .voices-nav button {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--line-light);
+      font-size: 1.1rem;
+      transition: background 0.2s ease;
+    }
+    .voices-nav button:hover { background: rgba(237, 235, 221, 0.12); }
+
+    /* Ampliar captura */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: grid;
+      place-items: center;
+      padding: 56px 16px 24px;
+      background: rgba(10, 8, 8, 0.92);
+      cursor: zoom-out;
+    }
+    .lightbox[hidden] { display: none; }
+    .lightbox img { max-width: 100%; max-height: 82vh; width: auto; height: auto; border-radius: 10px; }
+    .lightbox-close {
+      position: absolute; top: 10px; right: 12px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      color: var(--cotton);
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+    .lightbox-close:focus-visible { outline-color: var(--cotton); }
+
+    /* ============================================================
+       FRANJAS — ritmo claro / oscuro
+       ============================================================ */
+    .band { margin-top: 40px; padding: 44px 0; background: var(--noir); color: var(--cotton); }
+    .band .eyebrow { color: rgba(237, 235, 221, 0.6); }
+    .band .section-lead { color: rgba(237, 235, 221, 0.75); }
+    .band :focus-visible { outline-color: var(--cotton); }
+    .band .video { box-shadow: 0 0 0 1px var(--line-light), 0 30px 60px -30px rgba(0, 0, 0, 0.9); }
+
+    /* ============================================================
+       CÓMO FUNCIONA — 3 pasos
+       ============================================================ */
+    .steps { display: grid; gap: 10px; counter-reset: step; }
+    .step { counter-increment: step; padding: 20px; background: #fff; border-radius: 6px; box-shadow: var(--card-shadow); }
+    .step::before {
+      content: '0' counter(step);
+      display: block;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--cherry);
+      margin-bottom: 10px;
+    }
+    .step h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
+    .step p { font-size: 0.92rem; color: var(--muted); }
+    .funnel { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; font-size: 0.76rem; font-weight: 600; }
+    .funnel { gap: 5px; font-size: 0.72rem; }
+    .funnel span { padding: 4px 9px; border-radius: 999px; background: var(--cotton); white-space: nowrap; }
+    .funnel span:last-child { background: var(--cherry); color: #fff; }
+    .funnel i { font-style: normal; color: var(--muted); }
+
+    /* ============================================================
+       PARA QUIÉN ES
+       ============================================================ */
+    .fit { display: grid; gap: 10px; }
+    .fit-card { padding: 20px; border-radius: 6px; }
+    .fit-yes { background: #fff; box-shadow: var(--card-shadow); }
+    .fit-no { border: 1.5px solid var(--line); }
+    .fit-card h3 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; }
+    .fit-card ul { display: grid; gap: 10px; font-size: 0.93rem; }
+    .fit-card li { position: relative; padding-left: 26px; }
+    .fit-card li::before { position: absolute; left: 0; top: 0; font-weight: 700; }
+    .fit-yes li::before { content: '✓'; color: var(--cherry); }
+    .fit-no li { color: var(--muted); }
+    .fit-no li::before { content: '✕'; color: var(--muted); }
+
+    /* ============================================================
+       CIERRE
+       ============================================================ */
+    .closing { padding: 52px 0; background: var(--maroon); color: var(--cotton); text-align: center; }
+    .closing h2 { font-family: var(--font-display); font-size: clamp(1.7rem, 7vw, 2.6rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 12px; text-wrap: balance; }
+    .closing h2 em { font-style: italic; font-weight: 400; }
+    .closing p { font-size: 0.98rem; opacity: 0.9; margin-bottom: 22px; }
+    .closing p b { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .closing .btn-cta { max-width: 320px; margin: 0 auto; }
 
     /* ============================================================
        TEMARIO
        ============================================================ */
-    .models { display: grid; gap: 8px; margin-bottom: 26px; }
-    .models li { padding: 14px 16px; background: #fff; border-radius: 6px; box-shadow: 0 1px 0 var(--line); }
+    .models { display: grid; gap: 8px; margin-bottom: 30px; }
+    .models li { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: center; padding: 14px 16px; background: #fff; border-radius: 6px; box-shadow: 0 1px 0 var(--line); }
+    .models svg { width: 44px; height: 44px; padding: 10px; border-radius: 50%; background: var(--cotton); color: var(--cherry); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
     .models b { display: block; font-size: 0.96rem; font-weight: 600; }
     .models span { display: block; margin-top: 2px; font-size: 0.86rem; color: var(--muted); }
 
-    .modules { counter-reset: mod; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    /* Recorrido 01 → 10 */
+    .modules {
+      counter-reset: mod;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(5, auto);
+      grid-auto-flow: column;
+      column-gap: 18px;
+    }
     .modules li {
       counter-increment: mod;
+      position: relative;
       display: flex;
       align-items: baseline;
-      gap: 10px;
-      padding: 12px 14px;
-      background: #fff;
-      border-radius: 6px;
-      font-size: 0.92rem;
+      gap: 8px;
+      margin-left: 6px;
+      padding: 0 0 20px 22px;
+      border-left: 2px solid var(--line);
+      font-size: 0.95rem;
       font-weight: 600;
-      box-shadow: 0 1px 0 var(--line);
+      line-height: 1.2;
     }
+    .modules li:nth-child(5n) { border-left-color: transparent; padding-bottom: 0; }
     .modules li::before {
       content: counter(mod, decimal-leading-zero);
       font-family: var(--font-display);
       font-style: italic;
       font-weight: 400;
-      font-size: 0.86rem;
+      font-size: 0.9rem;
       color: var(--cherry);
+    }
+    .modules li::after {
+      content: '';
+      position: absolute;
+      left: -7px; top: 3px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--cherry);
+      box-shadow: 0 0 0 3px var(--cotton);
     }
 
     /* ============================================================
@@ -385,7 +516,7 @@
     /* ============================================================
        LEAD CAPTURE — next free class
        ============================================================ */
-    .capture { padding-bottom: 44px; }
+    .capture { padding-bottom: 48px; }
 
     .form-card { background: var(--noir); color: var(--cotton); border-radius: 6px; padding: 24px 20px; }
     .form-card .eyebrow { color: rgba(237, 235, 221, 0.7); }
@@ -485,6 +616,8 @@
       .faq-list, #dudas .eyebrow, #dudas .section-title { max-width: 720px; margin-left: auto; margin-right: auto; }
 
       section { padding-top: 64px; }
+      .band { margin-top: 64px; padding: 64px 0; }
+      .closing { padding: 80px 0; }
 
       .hero { padding-top: 56px; }
       .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 48px; align-items: center; }
@@ -492,31 +625,30 @@
       .hero-note { text-align: left; }
       .hero-sub { font-size: 1.1rem; max-width: 46ch; }
 
-      .hero-photo {
-        display: block;
-        aspect-ratio: 4 / 5;
-        border-radius: 6px;
-        overflow: hidden;
-        box-shadow: var(--card-shadow);
-        background: linear-gradient(160deg, #d9d5c3 0%, #c9c4b0 100%);
-      }
-      .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
+      .hero-photo { margin-top: 0; aspect-ratio: 4 / 5; }
+      .hero-photo img { object-position: 50% 20%; }
 
       .stats { margin-top: 40px; }
       .stats li { padding: 20px 12px; }
       .stats span { font-size: 0.8rem; }
 
-      .host { padding: 28px 0 0; border-bottom: none; }
-      .host-photo { display: none; }
+      .host { padding: 28px 0 0; }
       .host p { font-size: 0.98rem; max-width: 78ch; }
 
       .case { grid-template-columns: 0.85fr 1.15fr; gap: 14px; }
       .case-after { grid-template-columns: 120px 1fr; }
       .case-shot { width: 120px; }
-      .voices { display: block; columns: 3; column-gap: 12px; }
-      .voices img { margin-bottom: 12px; break-inside: avoid; }
+      .voices { margin: 0; padding: 4px 0 8px; scroll-padding-left: 0; gap: 12px; }
+      .voice-card { flex: 0 0 300px; height: 250px; }
+      .voice-card img { max-height: 232px; }
+      .voices-nav { display: flex; }
+      .voices-hint { visibility: hidden; }
+      .steps { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .fit { grid-template-columns: 1fr 1fr; gap: 14px; }
       .models { grid-template-columns: 1fr 1fr; }
-      .modules { grid-template-columns: repeat(5, 1fr); }
+      .modules { grid-template-columns: repeat(5, 1fr); grid-template-rows: none; grid-auto-flow: row; column-gap: 0; row-gap: 30px; }
+      .modules li, .modules li:nth-child(5n) { flex-direction: column; gap: 2px; margin: 0; padding: 18px 10px 0 0; border-left: none; border-top: 2px solid var(--line); }
+      .modules li::after { left: 0; top: -7px; }
 
       .plans .eyebrow, .plans .section-title, .plans .section-lead { text-align: center; }
       .plans-grid { grid-template-columns: repeat(3, 1fr); }
@@ -561,23 +693,20 @@
         </div>
 
         <ul class="stats" aria-label="Experiencia de Made">
-          <li><strong>+5 años</strong><span>en producción audiovisual</span></li>
-          <li><strong>15</strong><span>cuentas de TikTok gestionadas</span></li>
-          <li><strong>10.000 €</strong><span>al mes en ventas con vídeo, en una cuenta</span></li>
+          <li><strong data-count="5" data-prefix="+" data-suffix=" años">+5 años</strong><span>en producción audiovisual</span></li>
+          <li><strong data-count="15">15</strong><span>cuentas de TikTok gestionadas</span></li>
+          <li><strong data-count="10000" data-suffix=" €">10.000 €</strong><span>al mes en ventas con vídeo, en una cuenta</span></li>
         </ul>
 
         <!-- HOST -->
         <div class="host">
-          <div class="host-photo">
-            <img src="madelene.jpg" alt="" width="144" height="144" />
-          </div>
           <p><b>Soy Made.</b> Más de 5 años en producción audiovisual y más de 2 en redes sociales para e-commerce. He llevado la estrategia de contenido de hasta 15 cuentas de TikTok, con ventas atribuidas a vídeos de hasta 10.000 €/mes en una sola cuenta.</p>
         </div>
       </div>
     </section>
 
     <!-- VÍDEO -->
-    <section aria-labelledby="video-title">
+    <section class="band" aria-labelledby="video-title">
       <div class="container">
         <p class="eyebrow reveal">Empieza por aquí</p>
         <h2 class="section-title reveal" id="video-title">Antes de crear contenido, necesitas <em>entender esto</em></h2>
@@ -590,8 +719,33 @@
       </div>
     </section>
 
+    <!-- CÓMO FUNCIONA -->
+    <section aria-labelledby="how-title">
+      <div class="container">
+        <p class="eyebrow reveal">Cómo funciona</p>
+        <h2 class="section-title reveal" id="how-title">De tu punto de partida a tu <em>punto de llegada</em></h2>
+        <ol class="steps">
+          <li class="step reveal">
+            <h3>Eliges tu modelo</h3>
+            <p>Ves las cuatro formas de monetizar con contenido y te quedas con la que encaja con lo que sabes y disfrutas hacer.</p>
+          </li>
+          <li class="step reveal">
+            <h3>Montas tu sistema</h3>
+            <p>Aprendes el recorrido completo, del primer vídeo al cliente.</p>
+            <div class="funnel" aria-label="Visibilidad, interés, confianza, cliente">
+              <span>Visibilidad</span><span>Interés</span><span>Confianza</span><span>Cliente</span>
+            </div>
+          </li>
+          <li class="step reveal">
+            <h3>Avanzas acompañada</h3>
+            <p>Comunidad, chat y seguimiento en todos los planes. Y mentoría privada con Made si eliges un plan con acompañamiento.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
     <!-- RESULTADOS -->
-    <section aria-labelledby="results-title">
+    <section class="band" aria-labelledby="results-title">
       <div class="container">
         <p class="eyebrow reveal">Resultados</p>
         <h2 class="section-title reveal" id="results-title">Lo que dicen las <em>alumnas</em></h2>
@@ -606,9 +760,9 @@
             <img class="case-shot" src="pruebas/caso-video.jpg" width="480" height="845" loading="lazy" alt="Captura de un vídeo de la alumna con 58,8 mil visitas" />
             <span class="case-tag">Después</span>
             <div class="case-nums">
-              <div><strong>58,8 mil</strong><span>visitas en un vídeo</span></div>
-              <div><strong>16,7 mil</strong><span>visitas en otro</span></div>
-              <div><strong>~9K</strong><span>seguidores, desde 3K–4K</span></div>
+              <div><strong data-count="58.8" data-dec="1" data-suffix=" mil">58,8 mil</strong><span>visitas en un vídeo</span></div>
+              <div><strong data-count="16.7" data-dec="1" data-suffix=" mil">16,7 mil</strong><span>visitas en otro</span></div>
+              <div><strong data-count="9" data-prefix="~" data-suffix="K">~9K</strong><span>seguidores, desde 3K–4K</span></div>
             </div>
             <p>Con una estrategia personalizada, su cuenta creció y empezó a atraer nuevos clientes para su proyecto.</p>
           </article>
@@ -616,13 +770,47 @@
 
         <h3 class="sub-title reveal">Mensajes de alumnas</h3>
         <p class="section-lead reveal" style="margin-top:-6px">Capturas de conversaciones reales.</p>
-        <div class="voices">
-          <img class="reveal" src="pruebas/mensaje-1.jpg" width="820" height="505" loading="lazy" alt="Captura de un mensaje de una alumna: «Me encanta el curso. Voy por la mentalidad. Está todo muy bien explicado. Estoy muy contenta, siento que he acertado con vosotros.»" />
-          <img class="reveal" src="pruebas/mensaje-2.jpg" width="820" height="810" loading="lazy" alt="Captura de un mensaje de una alumna: «Tu contenido me está motivando y enseñando muchísimo, ya que estoy montando una tienda de ropa y me ayuda a aprender de marketing.»" />
-          <img class="reveal" src="pruebas/mensaje-3.jpg" width="820" height="705" loading="lazy" alt="Captura de un mensaje de una alumna: «He despejado un poco este nudo que tenía. Estaba perdida y la verdad lo quiero aprender.»" />
-          <img class="reveal" src="pruebas/mensaje-4.jpg" width="820" height="382" loading="lazy" alt="Captura de un mensaje de una alumna: «Aquí andamos, pero la motivación que necesitaba fue después de hablar contigo. Ese crédito es tuyo.»" />
-          <img class="reveal" src="pruebas/mensaje-5.jpg" width="820" height="598" loading="lazy" alt="Captura de un mensaje de una alumna: «Made, es que no sé por dónde comenzar. Gracias por explicarme, tú lo haces parecer fácil.»" />
-          <img class="reveal" src="pruebas/mensaje-6.jpg" width="820" height="255" loading="lazy" alt="Captura de un mensaje de una alumna: «Me gusta mucho porque lo haces muy entendible y ameno. Hablas claro y al grano.»" />
+        <div class="reveal">
+          <div class="voices" id="voices" tabindex="0" aria-label="Capturas de mensajes de alumnas">
+            <button type="button" class="voice-card" data-full="pruebas/mensaje-1.jpg" aria-label="Ampliar captura"><img src="pruebas/mensaje-1.jpg" width="820" height="505" loading="lazy" alt="Captura de un mensaje de una alumna: «Me encanta el curso. Voy por la mentalidad. Está todo muy bien explicado. Estoy muy contenta, siento que he acertado con vosotros.»" /></button>
+            <button type="button" class="voice-card" data-full="pruebas/mensaje-2.jpg" aria-label="Ampliar captura"><img src="pruebas/mensaje-2.jpg" width="820" height="810" loading="lazy" alt="Captura de un mensaje de una alumna: «Tu contenido me está motivando y enseñando muchísimo, ya que estoy montando una tienda de ropa y me ayuda a aprender de marketing.»" /></button>
+            <button type="button" class="voice-card" data-full="pruebas/mensaje-3.jpg" aria-label="Ampliar captura"><img src="pruebas/mensaje-3.jpg" width="820" height="705" loading="lazy" alt="Captura de un mensaje de una alumna: «He despejado un poco este nudo que tenía. Estaba perdida y la verdad lo quiero aprender.»" /></button>
+            <button type="button" class="voice-card" data-full="pruebas/mensaje-4.jpg" aria-label="Ampliar captura"><img src="pruebas/mensaje-4.jpg" width="820" height="382" loading="lazy" alt="Captura de un mensaje de una alumna: «Aquí andamos, pero la motivación que necesitaba fue después de hablar contigo. Ese crédito es tuyo.»" /></button>
+            <button type="button" class="voice-card" data-full="pruebas/mensaje-5.jpg" aria-label="Ampliar captura"><img src="pruebas/mensaje-5.jpg" width="820" height="598" loading="lazy" alt="Captura de un mensaje de una alumna: «Made, es que no sé por dónde comenzar. Gracias por explicarme, tú lo haces parecer fácil.»" /></button>
+            <button type="button" class="voice-card" data-full="pruebas/mensaje-6.jpg" aria-label="Ampliar captura"><img src="pruebas/mensaje-6.jpg" width="820" height="255" loading="lazy" alt="Captura de un mensaje de una alumna: «Me gusta mucho porque lo haces muy entendible y ameno. Hablas claro y al grano.»" /></button>
+          </div>
+          <div class="voices-foot">
+            <span class="voices-hint">Desliza para ver más · toca para ampliar</span>
+            <div class="voices-nav">
+              <button type="button" id="voices-prev" aria-label="Capturas anteriores">←</button>
+              <button type="button" id="voices-next" aria-label="Capturas siguientes">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARA QUIÉN ES -->
+    <section aria-labelledby="fit-title">
+      <div class="container">
+        <p class="eyebrow reveal">Para quién es</p>
+        <h2 class="section-title reveal" id="fit-title">¿Es <em>para ti</em>?</h2>
+        <div class="fit">
+          <div class="fit-card fit-yes reveal">
+            <h3>Es para ti si…</h3>
+            <ul>
+              <li>Publicas, pero tu contenido no te trae clientes.</li>
+              <li>Tienes un negocio, una habilidad o un conocimiento y quieres venderlo con contenido.</li>
+              <li>Quieres aprender a hacerlo tú, sin pagarlo todo fuera.</li>
+            </ul>
+          </div>
+          <div class="fit-card fit-no reveal">
+            <h3>No es para ti si…</h3>
+            <ul>
+              <li>Buscas resultados sin constancia. Hace falta una meta, un plan y acción.</li>
+              <li>Solo quieres ganar seguidores. Aquí el objetivo son ventas y clientes.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
@@ -635,13 +823,13 @@
         <p class="section-lead reveal">Cuatro formas de monetizar con contenido. Eliges la que encaja contigo.</p>
 
         <ul class="models reveal">
-          <li><b>TikTok Shop</b><span>Vender productos con vídeo, con estadísticas reales de creadores y vendedores.</span></li>
-          <li><b>UGC</b><span>Crear contenido para marcas. No depende de cuántos seguidores tengas.</span></li>
-          <li><b>Infoproductos</b><span>Convertir lo que sabes en un producto, apoyado en tu marca personal.</span></li>
-          <li><b>Contenido para negocios</b><span>Ofrecer tus habilidades como servicio a negocios que necesitan vender.</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><div><b>TikTok Shop</b><span>Vender productos con vídeo, con estadísticas reales de creadores y vendedores.</span></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="12" height="10" rx="2"/><path d="M15 11l6-3v8l-6-3z"/></svg><div><b>UGC</b><span>Crear contenido para marcas. No depende de cuántos seguidores tengas.</span></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13c-3-.5-6 0-8 1.5z"/><path d="M12 6v13"/></svg><div><b>Infoproductos</b><span>Convertir lo que sabes en un producto, apoyado en tu marca personal.</span></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10l1.5-5h13L20 10"/><path d="M4 10v9h16v-9"/><path d="M4 10a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0A2.7 2.7 0 0 0 20 10"/><path d="M10 19v-5h4v5"/></svg><div><b>Contenido para negocios</b><span>Ofrecer tus habilidades como servicio a negocios que necesitan vender.</span></div></li>
         </ul>
 
-        <p class="section-lead reveal" style="margin-top:0">Y los 10 bloques de la formación:</p>
+        <p class="section-lead reveal" style="margin-top:0">El recorrido, en 10 bloques:</p>
         <ol class="modules reveal">
           <li>Mentalidad</li>
           <li>Marketing</li>
@@ -794,6 +982,15 @@
       </div>
     </section>
 
+    <!-- CIERRE -->
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="container">
+        <h2 id="closing-title">Empieza a convertir tu contenido en <em>ingresos</em></h2>
+        <p id="closing-offer">Black Friday: 50% de descuento. Termina en <b id="closing-count">pocos días</b>.</p>
+        <a href="#planes" class="btn-cta btn-light">Ver planes <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
   </main>
 
   <footer class="footer">
@@ -810,6 +1007,12 @@
   <!-- BOTÓN FIJO MÓVIL -->
   <div class="sticky" id="sticky">
     <a href="#planes" class="btn-cta">Ver planes <span class="arrow" aria-hidden="true">→</span></a>
+  </div>
+
+  <!-- AMPLIAR CAPTURA -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Captura ampliada" hidden>
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Cerrar">×</button>
+    <img id="lightbox-img" src="" alt="" />
   </div>
 
   <!-- COOKIES -->
@@ -840,6 +1043,7 @@
        CUENTA ATRÁS — al terminar, se retira el mensaje de oferta
        ============================================================ */
     var countdownEl = document.getElementById('countdown');
+    var closingCount = document.getElementById('closing-count');
 
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
@@ -850,13 +1054,16 @@
         document.getElementById('hero-note').hidden = true;
         document.getElementById('planes-eyebrow').textContent = 'Planes';
         document.getElementById('faq-oferta').hidden = true;
+        document.getElementById('closing-offer').hidden = true;
         return false;
       }
       var d = Math.floor(diff / 86400000);
       var h = Math.floor(diff % 86400000 / 3600000);
       var m = Math.floor(diff % 3600000 / 60000);
       var s = Math.floor(diff % 60000 / 1000);
-      countdownEl.textContent = '· ' + (d > 0 ? d + ' d ' : '') + pad(h) + ' h ' + pad(m) + ' m' + (d > 0 ? '' : ' ' + pad(s) + ' s');
+      var left = (d > 0 ? d + ' d ' : '') + pad(h) + ' h ' + pad(m) + ' m' + (d > 0 ? '' : ' ' + pad(s) + ' s');
+      countdownEl.textContent = '· ' + left;
+      closingCount.textContent = left;
       return true;
     }
     if (tick()) { var timer = setInterval(function() { if (!tick()) clearInterval(timer); }, 1000); }
@@ -945,6 +1152,71 @@
     } else {
       Array.prototype.forEach.call(reveals, function(el) { el.classList.add('is-in'); });
     }
+
+    /* ============================================================
+       CIFRAS — cuentan hacia arriba al entrar en pantalla
+       ============================================================ */
+    function fmt(n, dec) {
+      var parts = n.toFixed(dec).split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return parts.join(',');
+    }
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var counters = document.querySelectorAll('[data-count]');
+    if ('IntersectionObserver' in window && !reduced) {
+      var cio = new IntersectionObserver(function(entries) {
+        entries.forEach(function(en) {
+          if (!en.isIntersecting) return;
+          cio.unobserve(en.target);
+          var el = en.target;
+          var to = parseFloat(el.getAttribute('data-count'));
+          var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+          var pre = el.getAttribute('data-prefix') || '';
+          var suf = el.getAttribute('data-suffix') || '';
+          var t0 = null, dur = 1200;
+          function frame(t) {
+            if (t0 === null) t0 = t;
+            var k = Math.min(1, (t - t0) / dur);
+            var eased = 1 - Math.pow(1 - k, 3);
+            el.textContent = pre + fmt(to * eased, dec) + suf;
+            if (k < 1) requestAnimationFrame(frame);
+          }
+          requestAnimationFrame(frame);
+        });
+      }, { threshold: 0.6 });
+      Array.prototype.forEach.call(counters, function(el) { cio.observe(el); });
+    }
+
+    /* ============================================================
+       CAPTURAS — flechas del carrusel y ampliación
+       ============================================================ */
+    var voices = document.getElementById('voices');
+    function slide(dir) { voices.scrollBy({ left: dir * 312, behavior: reduced ? 'auto' : 'smooth' }); }
+    document.getElementById('voices-prev').addEventListener('click', function() { slide(-1); });
+    document.getElementById('voices-next').addEventListener('click', function() { slide(1); });
+
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    var lightboxClose = document.getElementById('lightbox-close');
+    var lastCard = null;
+
+    function closeLightbox() {
+      lightbox.hidden = true;
+      document.body.style.overflow = '';
+      if (lastCard) lastCard.focus();
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.voice-card'), function(card) {
+      card.addEventListener('click', function() {
+        lastCard = card;
+        lightboxImg.src = card.getAttribute('data-full');
+        lightboxImg.alt = card.querySelector('img').alt;
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+        lightboxClose.focus();
+      });
+    });
+    lightbox.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && !lightbox.hidden) closeLightbox(); });
 
     /* ============================================================
        HOTMART CLICKS — Meta Pixel InitiateCheckout per plan
