@@ -10,7 +10,7 @@
   <meta property="og:description" content="Formación, comunidad y seguimiento durante 1 año. Black Friday: 50% de descuento hasta el 30 de noviembre." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.mademarketing.site/" />
-  <meta property="og:image" content="https://www.mademarketing.site/madelene.jpg" />
+  <meta property="og:image" content="https://www.mademarketing.site/fotos/made-portada.jpg" />
   <meta name="theme-color" content="#1B1717" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23810100'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='40' fill='%23EDEBDD'%3EM%3C/text%3E%3C/svg%3E" />
 
@@ -177,7 +177,7 @@
       box-shadow: var(--card-shadow);
       background: linear-gradient(160deg, #d9d5c3 0%, #c9c4b0 100%);
     }
-    .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 40% 20%; }
 
     /* Cifras */
     .stats {
@@ -193,12 +193,6 @@
     .stats strong { display: block; font-family: var(--font-display); font-size: clamp(1.15rem, 5vw, 1.6rem); font-weight: 700; line-height: 1.1; white-space: nowrap; }
     .stats span { display: block; margin-top: 4px; font-size: 0.7rem; line-height: 1.3; color: var(--muted); }
 
-    /* ============================================================
-       HOST — photo + authority line
-       ============================================================ */
-    .host { padding: 20px 0 0; }
-    .host p { font-size: 0.9rem; line-height: 1.5; color: var(--muted); }
-    .host p b { color: var(--noir); font-weight: 600; }
 
     /* ============================================================
        VÍDEO — se carga de YouTube solo al pulsar
@@ -361,6 +355,22 @@
     .funnel span { padding: 4px 9px; border-radius: 999px; background: var(--cotton); white-space: nowrap; }
     .funnel span:last-child { background: var(--cherry); color: #fff; }
     .funnel i { font-style: normal; color: var(--muted); }
+
+    /* ============================================================
+       FOTOS DE MADE
+       ============================================================ */
+    .photo-wide { margin-bottom: 12px; border-radius: 6px; overflow: hidden; box-shadow: var(--card-shadow); aspect-ratio: 16 / 10; background: #d9d5c3; }
+    .photo-wide img { width: 100%; height: 100%; object-fit: cover; object-position: 35% 50%; }
+
+    .about { display: grid; gap: 22px; }
+    .about-photo { border-radius: 6px; overflow: hidden; box-shadow: var(--card-shadow); aspect-ratio: 4 / 5; background: #cfd2cc; }
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .about-text p { font-size: 0.98rem; color: var(--muted); margin-bottom: 12px; }
+    .about-text p.eyebrow { font-size: 0.72rem; margin-bottom: 10px; }
+    .about-text p b { color: var(--noir); font-weight: 600; }
+    .about-event { margin-top: 20px; }
+    .about-event img { width: 100%; height: auto; border-radius: 6px; box-shadow: var(--card-shadow); }
+    .about-event figcaption { margin-top: 8px; font-size: 0.8rem; color: var(--muted); }
 
     /* ============================================================
        PARA QUIÉN ES
@@ -625,15 +635,13 @@
       .hero-note { text-align: left; }
       .hero-sub { font-size: 1.1rem; max-width: 46ch; }
 
-      .hero-photo { margin-top: 0; aspect-ratio: 4 / 5; }
-      .hero-photo img { object-position: 50% 20%; }
+      .hero-photo { margin-top: 0; aspect-ratio: 1 / 1; }
+      .hero-photo img { object-position: 35% 20%; }
 
       .stats { margin-top: 40px; }
       .stats li { padding: 20px 12px; }
       .stats span { font-size: 0.8rem; }
 
-      .host { padding: 28px 0 0; }
-      .host p { font-size: 0.98rem; max-width: 78ch; }
 
       .case { grid-template-columns: 0.85fr 1.15fr; gap: 14px; }
       .case-after { grid-template-columns: 120px 1fr; }
@@ -644,6 +652,10 @@
       .voices-nav { display: flex; }
       .voices-hint { visibility: hidden; }
       .steps { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .photo-wide { aspect-ratio: 21 / 9; margin-bottom: 14px; }
+      .photo-wide img { object-position: 50% 28%; }
+      .about { grid-template-columns: 0.8fr 1.2fr; gap: 56px; align-items: start; }
+      .about-event { max-width: 420px; }
       .fit { grid-template-columns: 1fr 1fr; gap: 14px; }
       .models { grid-template-columns: 1fr 1fr; }
       .modules { grid-template-columns: repeat(5, 1fr); grid-template-rows: none; grid-auto-flow: row; column-gap: 0; row-gap: 30px; }
@@ -688,7 +700,7 @@
             <p class="hero-note" id="hero-note">Black Friday: 50% de descuento hasta el 30 de noviembre</p>
           </div>
           <div class="hero-photo">
-            <img src="madelene.jpg" alt="Made, Madelene Alvarez" width="400" height="400" />
+            <img src="fotos/made-portada.jpg" alt="Made, Madelene Alvarez, sonriendo en un evento" width="720" height="630" />
           </div>
         </div>
 
@@ -698,10 +710,6 @@
           <li><strong data-count="10000" data-suffix=" €">10.000 €</strong><span>al mes en ventas con vídeo, en una cuenta</span></li>
         </ul>
 
-        <!-- HOST -->
-        <div class="host">
-          <p><b>Soy Made.</b> Más de 5 años en producción audiovisual y más de 2 en redes sociales para e-commerce. He llevado la estrategia de contenido de hasta 15 cuentas de TikTok, con ventas atribuidas a vídeos de hasta 10.000 €/mes en una sola cuenta.</p>
-        </div>
       </div>
     </section>
 
@@ -724,6 +732,9 @@
       <div class="container">
         <p class="eyebrow reveal">Cómo funciona</p>
         <h2 class="section-title reveal" id="how-title">De tu punto de partida a tu <em>punto de llegada</em></h2>
+        <figure class="photo-wide reveal">
+          <img src="fotos/made-trabajando.jpg" alt="Made trabajando con su portátil junto a un ventanal con vistas a la ciudad" width="1100" height="686" loading="lazy" />
+        </figure>
         <ol class="steps">
           <li class="step reveal">
             <h3>Eliges tu modelo</h3>
@@ -842,6 +853,28 @@
           <li>Ads</li>
           <li>Marca personal</li>
         </ol>
+      </div>
+    </section>
+
+    <!-- QUIÉN TE ENSEÑA -->
+    <section aria-labelledby="about-title">
+      <div class="container">
+        <div class="about">
+          <figure class="about-photo reveal">
+            <img src="fotos/made-retrato.jpg" alt="Retrato de Madelene Alvarez" width="720" height="900" loading="lazy" />
+          </figure>
+          <div class="about-text">
+            <p class="eyebrow reveal">Quién te enseña</p>
+            <h2 class="section-title reveal" id="about-title">Soy <em>Made</em></h2>
+            <p class="reveal"><b>Madelene Alvarez</b>, creadora audiovisual y especialista en redes sociales.</p>
+            <p class="reveal">Llevo más de 5 años en producción y realización audiovisual, y más de 2 en redes sociales para e-commerce. He llevado la estrategia de contenido de hasta 15 cuentas de TikTok, con ventas atribuidas a vídeos de hasta 10.000 € al mes en una sola cuenta.</p>
+            <p class="reveal">En Método Fénix enseño lo mismo que aplico en mi trabajo.</p>
+            <figure class="about-event reveal">
+              <img src="fotos/made-hotmart-talks.jpg" alt="Made en el escenario de Hotmart Talks" width="1100" height="784" loading="lazy" />
+              <figcaption>En Hotmart Talks, el evento de la plataforma donde está alojada la formación.</figcaption>
+            </figure>
+          </div>
+        </div>
       </div>
     </section>
 
